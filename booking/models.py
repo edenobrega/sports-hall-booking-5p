@@ -15,15 +15,24 @@ class Facility(models.Model):
     contact_phone = models.CharField(max_length=15)
     image = CloudinaryField('image', default='placeholder')
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Tag(models.Model):
     shorthand = models.CharField(max_length=50)
     description = models.CharField(max_length=300)
 
+    def __str__(self):
+        return f"{self.shorthand}"
+
 
 class FacilityTag(models.Model):
     facility_id = models.ForeignKey(Facility(), on_delete=models.CASCADE)
     tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"fid:{self.facility_id} tid:{self.tag_id}"
 
 
 class TimeSlot(models.Model):
@@ -38,9 +47,16 @@ class TimeSlot(models.Model):
     saturday = models.BooleanField()
     sunday = models.BooleanField()
 
+    def __str__(self):
+        return f"fid:{self.facility_id} start:{self.start} end:{self.end}"
+
 
 class Booking(models.Model):
     facility_id = models.ForeignKey(Facility, on_delete=models.CASCADE)
     time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
+
+    def __str__(self):
+        return (f"fid:{self.facility_id} uid:{self.user_id} "
+                f"time:{self.time_slot} date:{self.date}")
