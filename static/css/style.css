@@ -3,3 +3,37 @@
     padding: 0;
     border: none;
 }
+
+header{
+    margin-top:10px;
+    height:50px;
+    margin-left: 25px;
+    margin-right: 25px;
+    border: 1px solid blue;
+}
+
+ul{
+    list-style-type: none;
+    overflow: hidden;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: black;
+    color: white;
+}
+
+li:not(:first-child){
+    float:right;
+}

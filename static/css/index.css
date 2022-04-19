@@ -5,54 +5,8 @@ html, body{
     overflow:hidden;
 }
 
-header{
-    margin-top:10px;
-    height:50px;
-    margin-left: 25px;
-    margin-right: 25px;
-    border: 1px solid blue;
-}
-
 main{
     margin-top:10px;
-}
-
-ul li{
-    list-style-type:  none;
-    height:50px;
-}
-
-ul li span{
-    display:inline-flex;
-    height:100%;
-    align-items: center;
-}
-
-.logo{
-    float: left;
-    text-align: center;
-    width: 125px;
-    font-size: 1.2rem;
-}
-
-.login{
-    float:right;
-    width:100px;
-    text-align:center;
-    /* margin-right: 50px; */
-}
-
-.register{
-    float:right;
-    width:100px;
-    text-align:center;
-    /* margin-right: 50px; */
-}
-
-.logo:hover, .login:hover, .register:hover{
-    background-color: black;
-    cursor: pointer;
-    color:white;
 }
 
 .middle-splash{
@@ -73,7 +27,6 @@ ul li span{
 }
 .search-bar{
     height:100%;
-
 }
 
 .search-bar input{
