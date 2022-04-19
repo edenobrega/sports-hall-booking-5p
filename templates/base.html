@@ -7,16 +7,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {% if user.is_authenticated %}
-        <title>Logged In</title>
-    {% else %}
-        <title>No Login</title>
-    {% endif %}
-
+    <title>bookit</title>
 
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
+
+<header>
+    <nav>
+        <ul>
+            <li>
+                <a>logo</a>
+            </li>
+
+            {% if user.is_authenticated %}
+            <li>
+                <a href="/logout">logout</a>
+            </li>
+
+            <li>
+                <a href="">Welcome {{request.user.username}}</a>
+            </li>
+            {% else %}
+                <li>
+                    <a href="/register">register</a>
+                </li>
+
+                <li>
+                    <a href="/login">login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+
 {% block content %}
 
 {% endblock content %}
