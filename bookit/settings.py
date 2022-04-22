@@ -31,6 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['bookit-5p.herokuapp.com', 'localhost']
 
+LOGIN_URL = '/login'
 
 # Application definition
 

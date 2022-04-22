@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% csrf_token %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/edit_tags.css' %}">
+<main>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>First</th>
+            <th>Second</th>
+            <th>Edit</th>
+        </tr>
+
+    {% for tag in fac_tags %}
+        <tr>
+            <td>{{tag.id}}</td>
+            <td>{{tag.shorthand}}</td>
+            <td>{{tag.description}}</td>
+            <td><a href="{{tag.id}}">Edit</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <a href="create">Create New</a>
+</main>
+
+{% endblock %}

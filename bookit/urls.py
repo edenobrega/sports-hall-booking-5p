@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from booking.views import get_booking_index, logout_view, login_view, register_view
-
+import booking.views as bkv
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', get_booking_index, name='get_booking_index'),
-    path('logout/', logout_view, name='logout_view'),
-    path('login/', login_view.as_view(), name='login_view'),
-    path('register/', register_view.as_view(), name='register')
+    path('', bkv.get_booking_index, name='get_booking_index'),
+    path('logout/', bkv.logout_view, name='logout_view'),
+    path('login/', bkv.login_view.as_view(), name='login_view'),
+    path('register/', bkv.register_view.as_view(), name='register'),
+    path('tags/', bkv.list_tags, name='list_tags'),
+    path('tags/<int:tag_id>', bkv.edit_tag.as_view(), name='edit_tag'),
+    path('tags/create', bkv.create_tag.as_view(), name='create_tag')
 ]
