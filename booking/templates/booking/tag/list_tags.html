@@ -3,7 +3,7 @@
 {% block content %}
 {% csrf_token %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/edit_tags.css' %}">
+<link rel="stylesheet" href="{% static 'css/list_tags.css' %}">
 <main>
     <table>
         <tr>
@@ -11,6 +11,7 @@
             <th>First</th>
             <th>Second</th>
             <th>Edit</th>
+            <th></th>
         </tr>
 
     {% for tag in fac_tags %}
@@ -19,11 +20,14 @@
             <td>{{tag.shorthand}}</td>
             <td>{{tag.description}}</td>
             <td><a href="{{tag.id}}">Edit</a></td>
+            <td><a href="">Delete</a></td>
         </tr>
     {% endfor %}
     </table>
 
-    <a href="create">Create New</a>
+    <div class="create-parent">
+        <a href="create">Create New</a>        
+    </div>
 </main>
 
 {% endblock %}

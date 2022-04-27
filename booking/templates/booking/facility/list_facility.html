@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/list_facility.css' %}">
+<main>
+    <table>
+        <tr>
+            <th>Admin</th>
+            <th>Name</th>
+            <th>Postcode</th>
+            <th>Address</th>
+            <th>Indoor</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Tags</th>
+            <th>Image</th>
+        </tr>
+
+        {% for facil in facilities %}
+            <tr>
+                <td>{{facil.admin}}</td>
+                <td>{{facil.name}}</td>
+                <td>{{facil.postcode}}</td>
+                <td>{{facil.address}}</td>
+                <td>{{facil.indoor}}</td>
+                <td>{{facil.contact_email}}</td>
+                <td>{{facil.contact_phone}}</td>
+                <td><img src="{{facil.image}}" /></td>
+            </tr>
+        {% endfor %}
+    </table>    
+
+    <div class="create-parent">
+        <a href="create">Create New</a>        
+    </div>
+</main>
+
+{% endblock %}

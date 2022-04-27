@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<script
+src="https://code.jquery.com/jquery-3.6.0.min.js"
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+crossorigin="anonymous"></script>
+
+<table>
+    <tr>
+        <th>Facility ID</th>
+        <th>Tag ID</th>
+        <th>Remove</th>
+    </tr>
+
+    {% for facil in data %}
+        <tr>
+            <td>{{facil.facility_id}}</td>
+            <td>{{facil.tag_id}}</td>
+            <td><button class="remove" value="{{facil.id}}">Remove</button></td>
+        </tr>
+    {% endfor %}
+</table>
+
+<select>
+    {% for tag in tags %}
+        <option value="{{tag.id}}">{{tag.shorthand}}</option>
+    {% endfor %}
+</select>
+<button id="add">Add Tag</button>
+{% endblock %}
