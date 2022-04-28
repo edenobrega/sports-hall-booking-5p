@@ -24,5 +24,8 @@ urlpatterns = [
     path('register/', bkv.register_view.as_view(), name='register'),
     path('tags/', bkv.list_tags, name='list_tags'),
     path('tags/<int:tag_id>', bkv.edit_tag.as_view(), name='edit_tag'),
-    path('tags/create', bkv.create_tag.as_view(), name='create_tag')
+    path('tags/create', bkv.create_tag.as_view(), name='create_tag'),
+    path('facility/create', bkv.create_facility.as_view(), name='create_facility'),
+    path('facility/', bkv.display_facility, name='display_facilities'),
+    path('facility/tags/modify/<int:facil_id>', bkv.modify_facility_tags.as_view(), name='modify_facility')
 ]

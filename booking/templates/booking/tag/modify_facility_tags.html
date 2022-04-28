@@ -2,31 +2,80 @@
 
 {% block content %}
 {% load static %}
+{% csrf_token %}
 <script
 src="https://code.jquery.com/jquery-3.6.0.min.js"
 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
 crossorigin="anonymous"></script>
 
-<table>
-    <tr>
-        <th>Facility ID</th>
-        <th>Tag ID</th>
-        <th>Remove</th>
-    </tr>
-
-    {% for facil in data %}
+<table id="facility-table">
+    <thead>
         <tr>
-            <td>{{facil.facility_id}}</td>
-            <td>{{facil.tag_id}}</td>
-            <td><button class="remove" value="{{facil.id}}">Remove</button></td>
+            <th>Facility ID</th>
+            <th>Tag ID</th>
+            <th>Remove</th>
+        </tr>        
+    </thead>
+
+    {% for facil_tag in data %}
+        <tr id="row-{{facil_tag.id}}">
+            <td>{{facil_tag.facility_id}}</td>
+            <td id="{{facil_tag.tag_id.id}}">{{facil_tag.tag_id}}</td>
+            <td><button class="remove" onclick="removeTag('row-{{facil_tag.id}}')">Remove</button></td>
         </tr>
     {% endfor %}
 </table>
 
-<select>
+<select id="tag-select">
     {% for tag in tags %}
         <option value="{{tag.id}}">{{tag.shorthand}}</option>
     {% endfor %}
 </select>
-<button id="add">Add Tag</button>
+
+<button id="add" onclick="addTag()">Add Tag</button>
+<button onclick="submit()">Submit Changes</button>
+
+<script>
+    let name = "{{data.0.facility_id}}";
+    let num = 9999;    
+
+    function submit(){
+        tableData = "";
+        table_rows = $("tr");
+
+        for (let i = 1; i < table_rows.length; i++) {
+            tableData = tableData + $("#"+table_rows[i].id +" td")[1].id + ",";
+        } 
+        tableData = tableData.substring(0, tableData.length - 1);
+
+        console.log(tableData);
+
+        $.ajax({
+            type: "POST",
+            url: "/facility/tags/modify/19",
+            data:{ Data:tableData },
+            headers:{
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            complete: window.location.replace("/")
+        });
+    }
+
+    function removeTag(id){
+        $('#'+id).remove();
+    }
+
+    function addTag(){
+        $('#facility-table tr:last').after(
+            ['<tr class="add" id="new-'+num+'">',
+              '<td>', name , '</td>',
+              '<td id="' + $('#tag-select').val()+ '">', $("#tag-select option:selected").text() ,'</td>',
+              '<td><button class="remove" onclick="removeTag(', "'new-"+num+ "')" +'"' + ">Remove</button></td>" ,
+              '</tr>'].join(' ')
+        );
+        num = num + 1;
+    }
+</script>
+
 {% endblock %}
+

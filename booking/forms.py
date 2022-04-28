@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from booking.models import Tag
-
+import booking.models as bkm
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required. Please enter your First name.')
@@ -11,11 +10,24 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
 
+# Chnage to tag form
 class EditTagForm(forms.ModelForm):
     class Meta:
-        model = Tag
+        model = bkm.Tag
         fields = '__all__'
 
+
+class FacilityForm(forms.ModelForm):
+    class Meta:
+        model = bkm.Facility
+        fields = '__all__'
+        widgets = {'admin': forms.HiddenInput()}
+        exclude = ('admin', )
+
+
+class FacilityTagForm(forms.Form):
+    new_tags = forms.CharField(max_length=200)
+    remove_tags = forms.CharField(max_length=200)
