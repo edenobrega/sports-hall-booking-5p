@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table>
+    <tr>
+        <td>id</td>
+        <td>start</td>
+        <td>end</td>
+        <td>Monday</td>
+        <td>Tuesday</td>
+        <td>Wednesday</td>
+        <td>Thursday</td>
+        <td>Friday</td>
+        <td>Saturday</td>
+        <td>Sunday</td>
+    </tr>
+
+    {% for slot in data %}
+        <tr>
+            <td>{{slot.id}}</td>
+            <td>{{slot.start|time:'H:i'}}</td>
+            <td>{{slot.end|time:'H:i'}}</td>
+            <td>{{slot.monday}}</td>
+            <td>{{slot.tuesday}}</td>
+            <td>{{slot.wednesday}}</td>
+            <td>{{slot.thursday}}</td>
+            <td>{{slot.friday}}</td>
+            <td>{{slot.saturday}}</td>
+            <td>{{slot.sunday}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<table>
+    <tr id="time-row">
+        <td></td>
+        {% for slot in table_data %}
+            <td>{{slot.0}}</td>
+        {% endfor %}
+    </tr>
+
+    <tr id="monday-row">
+        <td>Monday</td>
+        {% for slot in table_data %}
+            <td>{{slot.1}}</td>
+        {% endfor %}
+    </tr>
+
+    <tr id="tuesday-row">
+        <td>Tuesday</td>
+        {% for slot in table_data %}
+            <td>{{slot.2}}</td>
+        {% endfor %}
+    </tr>
+
+    <tr id="wednesday-row">
+        <td>Wednesday</td>
+        {% for slot in table_data %}
+            <td>{{slot.3}}</td>
+        {% endfor %}
+    </tr>
+
+    <tr id="thursday-row">
+        <td>Thursday</td>
+        {% for slot in table_data %}
+            <td>{{slot.4}}</td>
+        {% endfor %}
+    </tr>
+
+    <tr id="friday-row">
+        <td>Friday</td>
+        {% for slot in table_data %}
+            <td>{{slot.5}}</td>
+        {% endfor %}
+    </tr>
+
+    <tr id="saturday-row">
+        <td>Saturday</td>
+        {% for slot in table_data %}
+            <td>{{slot.6}}</td>
+        {% endfor %}
+    </tr>
+
+    <tr id="sunday-row">
+        <td>Sunday</td>
+        {% for slot in table_data %}
+            <td>{{slot.7}}</td>
+        {% endfor %}
+    </tr>
+</table>
+{% endblock %}

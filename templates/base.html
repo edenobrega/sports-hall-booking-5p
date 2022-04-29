@@ -15,26 +15,26 @@
 
 <header>
     <nav>
-        <ul>
-            <li>
-                <a>logo</a>
+        <ul class="header-list">
+            <li class="logo-parent">
+                <a href="/" class="list-link">logo</a>
             </li>
 
             {% if user.is_authenticated %}
-            <li>
-                <a href="/logout">logout</a>
-            </li>
-
-            <li>
-                <a href="">Welcome {{request.user.username}}</a>
-            </li>
-            {% else %}
-                <li>
-                    <a href="/register">register</a>
+                <li class="list-right">
+                    <a href="/logout" class="list-link">logout</a>
                 </li>
 
-                <li>
-                    <a href="/login">login</a>
+                <li class="list-right">
+                    <a href="" class="list-link">Welcome {{request.user.username}}</a>
+                </li>
+            {% else %}
+                <li class="list-right">
+                    <a href="/register" class="list-link">register</a>
+                </li>
+
+                <li class="list-right">
+                    <a href="/login" class="list-link">login</a>
                 </li>
             {% endif %}
         </ul>

@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import booking.views as bkv
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', bkv.get_booking_index, name='get_booking_index'),
@@ -27,5 +28,7 @@ urlpatterns = [
     path('tags/create', bkv.create_tag.as_view(), name='create_tag'),
     path('facility/create', bkv.create_facility.as_view(), name='create_facility'),
     path('facility/', bkv.display_facility, name='display_facilities'),
-    path('facility/tags/modify/<int:facil_id>', bkv.modify_facility_tags.as_view(), name='modify_facility')
+    path('facility/tags/modify/<int:facil_id>', bkv.modify_facility_tags.as_view(), name='modify_facility_tags'),
+    path('facility/modify/<int:facil_id>', bkv.modify_facility.as_view(), name='modify_facility'),
+    path('facility/times/modify/<int:facil_id>', bkv.modify_timeslots.as_view(), name='modify_slots')
 ]

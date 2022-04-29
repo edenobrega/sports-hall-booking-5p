@@ -15,18 +15,29 @@
             <th>Phone</th>
             <th>Tags</th>
             <th>Image</th>
+            <th>Modify Facility</th>
+            <th>Modify Tags</th>
+            <th>Modify Slots</th>
         </tr>
 
-        {% for facil in facilities %}
+        {% for d in data %}
             <tr>
-                <td>{{facil.admin}}</td>
-                <td>{{facil.name}}</td>
-                <td>{{facil.postcode}}</td>
-                <td>{{facil.address}}</td>
-                <td>{{facil.indoor}}</td>
-                <td>{{facil.contact_email}}</td>
-                <td>{{facil.contact_phone}}</td>
-                <td><img src="{{facil.image}}" /></td>
+                <td>{{d.0.admin}}</td>
+                <td>{{d.0.name}}</td>
+                <td>{{d.0.postcode}}</td>
+                <td>{{d.0.address}}</td>
+                <td>{{d.0.indoor}}</td>
+                <td>{{d.0.contact_email}}</td>
+                <td>{{d.0.contact_phone}}</td>
+                <td>
+                    {% for t in d.1 %}
+                    <span>{{t.tag_id}}</span>
+                    {% endfor %}
+                </td>
+                <td><img src="{{d.0.image}}" /></td>
+                <td><a href="modify/{{d.0.id}}">Modify</a></td>
+                <td><a href="tags/modify/{{d.0.id}}">Modify</a></td>
+                <td><a href="times/modify/{{d.0.id}}">Modify</a></td>
             </tr>
         {% endfor %}
     </table>    

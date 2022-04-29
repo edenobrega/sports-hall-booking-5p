@@ -23,28 +23,28 @@ header{
     border: 1px solid blue;
 }
 
-ul{
+.header-list{
     list-style-type: none;
-    overflow: hidden;
+    overflow: hidden;    
 }
 
-li {
-    float: left;
+.logo-parent{
+    float: left;    
 }
 
-li a {
+.list-link{
     display: block;
     color: black;
     text-align: center;
     padding: 16px;
-    text-decoration: none;
+    text-decoration: none;    
 }
 
-li a:hover {
+.list-link:hover{
     background-color: black;
-    color: white;
+    color: white;    
 }
 
-li:not(:first-child){
+.list-right{
     float:right;
 }

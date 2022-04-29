@@ -25,3 +25,12 @@
     left:25%;
     top:50%;
 }
+
+.list{
+    list-style-type: none;
+    overflow: hidden;    
+}
+
+.list li{
+    display:inline;
+}

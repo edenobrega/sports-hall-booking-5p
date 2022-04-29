@@ -36,7 +36,7 @@ crossorigin="anonymous"></script>
 <button onclick="submit()">Submit Changes</button>
 
 <script>
-    let name = "{{data.0.facility_id}}";
+    let name = "{{info_tup.1}}";
     let num = 9999;    
 
     function submit(){
@@ -52,7 +52,7 @@ crossorigin="anonymous"></script>
 
         $.ajax({
             type: "POST",
-            url: "/facility/tags/modify/19",
+            url: "/facility/tags/modify/{{info_tup.0}}",
             data:{ Data:tableData },
             headers:{
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
