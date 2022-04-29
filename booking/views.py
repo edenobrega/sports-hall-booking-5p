@@ -137,7 +137,7 @@ class create_tag(LoginRequiredMixin, View):
 
     def get(self, request):
         form = bkf.EditTagForm()
-        return render(request, 'booking/modify_tag.html', {'form': form})
+        return render(request, 'booking/tag/modify_tag.html', {'form': form})
 
     def post(self, request):
         form = bkf.EditTagForm(request.POST)
