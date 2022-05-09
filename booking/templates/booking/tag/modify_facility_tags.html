@@ -1,7 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-{% load static %}
 {% csrf_token %}
 <script
 src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -47,8 +47,6 @@ crossorigin="anonymous"></script>
             tableData = tableData + $("#"+table_rows[i].id +" td")[1].id + ",";
         } 
         tableData = tableData.substring(0, tableData.length - 1);
-
-        console.log(tableData);
 
         $.ajax({
             type: "POST",
