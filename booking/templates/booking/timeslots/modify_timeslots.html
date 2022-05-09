@@ -1,91 +1,127 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<table>
-    <tr>
-        <td>id</td>
-        <td>start</td>
-        <td>end</td>
-        <td>Monday</td>
-        <td>Tuesday</td>
-        <td>Wednesday</td>
-        <td>Thursday</td>
-        <td>Friday</td>
-        <td>Saturday</td>
-        <td>Sunday</td>
-    </tr>
+{% csrf_token %}
+<script
+src="https://code.jquery.com/jquery-3.6.0.min.js"
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/modify_timeslots.css' %}">
 
-    {% for slot in data %}
+<main>
+    <table id="slot-table">
         <tr>
-            <td>{{slot.id}}</td>
-            <td>{{slot.start|time:'H:i'}}</td>
-            <td>{{slot.end|time:'H:i'}}</td>
-            <td>{{slot.monday}}</td>
-            <td>{{slot.tuesday}}</td>
-            <td>{{slot.wednesday}}</td>
-            <td>{{slot.thursday}}</td>
-            <td>{{slot.friday}}</td>
-            <td>{{slot.saturday}}</td>
-            <td>{{slot.sunday}}</td>
+            <td>id</td>
+            <td>start</td>
+            <td>end</td>
+            <td>Monday</td>
+            <td>Tuesday</td>
+            <td>Wednesday</td>
+            <td>Thursday</td>
+            <td>Friday</td>
+            <td>Saturday</td>
+            <td>Sunday</td>
         </tr>
-    {% endfor %}
-</table>
-
-<table>
-    <tr id="time-row">
-        <td></td>
-        {% for slot in table_data %}
-            <td>{{slot.0}}</td>
+    
+        {% for slot in data %}
+            <tr id="slot-{{slot.id}}">
+                <td>{{slot.id}}</td>
+                <td><input type="time" value="{{slot.start|time:'H:i'}}" autocomplete="off" /></td>
+                <td><input type="time" value="{{slot.end|time:'H:i'}}" autocomplete="off" /></td>
+                <td><input type="checkbox" {% if slot.monday %} checked {% endif %} /></td>
+                <td><input type="checkbox" {% if slot.tuesday %} checked {% endif %} /></td>
+                <td><input type="checkbox" {% if slot.wednesday %} checked {% endif %} /></td>
+                <td><input type="checkbox" {% if slot.thursday %} checked {% endif %} /></td>
+                <td><input type="checkbox" {% if slot.friday %} checked {% endif %} /></td>
+                <td><input type="checkbox" {% if slot.saturday %} checked {% endif %} /></td>
+                <td><input type="checkbox" {% if slot.sunday %} checked {% endif %} /></td>
+            </tr>
         {% endfor %}
-    </tr>
+    </table>
 
-    <tr id="monday-row">
-        <td>Monday</td>
-        {% for slot in table_data %}
-            <td>{{slot.1}}</td>
-        {% endfor %}
-    </tr>
+    <button onclick="addTimeSlot()">Add New</button>
+    <button onclick="submit()">Save</button>
+</main>
 
-    <tr id="tuesday-row">
-        <td>Tuesday</td>
-        {% for slot in table_data %}
-            <td>{{slot.2}}</td>
-        {% endfor %}
-    </tr>
+<script>
+    let id = {% with data|last as last %}{{last.id}}{% endwith %} + 1;
+    let final_id = {% with data|last as last %}{{last.id}}{% endwith %};
+    function addTimeSlot(){
+        $('#slot-table tr:last').after(
+            [
+                '<tr id="slot-'+id+'">',
+                '<td></td>',
+                '<td><input type="time" autocomplete="off" /></td>',
+                '<td><input type="time" autocomplete="off" /></td>',
+                '<td><input type="checkbox" {% if slot.monday %} checked {% endif %} /></td>',
+                '<td><input type="checkbox" {% if slot.tuesday %} checked {% endif %} /></td>',
+                '<td><input type="checkbox" /></td>',
+                '<td><input type="checkbox" /></td>',
+                '<td><input type="checkbox" /></td>',
+                '<td><input type="checkbox" /></td>',
+                '<td><input type="checkbox" /></td>'
+            ].join(' ')
+        )
+        id += 1;
+    }
 
-    <tr id="wednesday-row">
-        <td>Wednesday</td>
-        {% for slot in table_data %}
-            <td>{{slot.3}}</td>
-        {% endfor %}
-    </tr>
+    function submit(){
+        tableData = "";
+        table_rows = $("tr");
 
-    <tr id="thursday-row">
-        <td>Thursday</td>
-        {% for slot in table_data %}
-            <td>{{slot.4}}</td>
-        {% endfor %}
-    </tr>
+        for (let i = 1; i < table_rows.length; i++){
 
-    <tr id="friday-row">
-        <td>Friday</td>
-        {% for slot in table_data %}
-            <td>{{slot.5}}</td>
-        {% endfor %}
-    </tr>
 
-    <tr id="saturday-row">
-        <td>Saturday</td>
-        {% for slot in table_data %}
-            <td>{{slot.6}}</td>
-        {% endfor %}
-    </tr>
+            // if id is greater than the largest id from the original list
+            if(table_rows[i].id.split("-")[1] > final_id){
+                let row = $("#"+table_rows[i].id+" td");
+                tableData = tableData + [
+                    "[",
+                    "new,",
+                    row[1].firstChild.value+",",
+                    row[2].firstChild.value+",",
+                    row[3].firstChild.checked+",",
+                    row[4].firstChild.checked+",",
+                    row[5].firstChild.checked+",",
+                    row[6].firstChild.checked+",",
+                    row[7].firstChild.checked+",",
+                    row[8].firstChild.checked+",",
+                    row[9].firstChild.checked+"",
+                    "]",
+                    "|"
+                ].join('');
+            }
+            else{
+                let row = $("#"+table_rows[i].id+" td");
+                tableData += [
+                    "[",
+                    row[0].parentElement.id.split('-')[1]+",",
+                    row[1].firstChild.value+",",
+                    row[2].firstChild.value+",",
+                    row[3].firstChild.checked+",",
+                    row[4].firstChild.checked+",",
+                    row[5].firstChild.checked+",",
+                    row[6].firstChild.checked+",",
+                    row[7].firstChild.checked+",",
+                    row[8].firstChild.checked+",",
+                    row[9].firstChild.checked+"",
+                    "]",
+                    "|"
+                ].join('');
+            }
+        }
+        tableData = tableData.substring(0, tableData.length - 1);
 
-    <tr id="sunday-row">
-        <td>Sunday</td>
-        {% for slot in table_data %}
-            <td>{{slot.7}}</td>
-        {% endfor %}
-    </tr>
-</table>
+        $.ajax({
+            type: "POST",
+            url: "/facility/times/modify/{{facil_id}}",
+            data:{ Data:tableData },
+            headers:{
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            complete: window.location.replace("/")
+        });
+    }
+</script>
 {% endblock %}

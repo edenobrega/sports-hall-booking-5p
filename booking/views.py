@@ -3,19 +3,27 @@ from django.contrib.auth import login, authenticate, logout
 import booking.forms as bkf
 from django.contrib.auth.models import Group, User
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin, PermissionRequiredMixin)
 import booking.models as bkm
 from django.contrib.auth.decorators import login_required
 import cloudinary
 from django.utils.datastructures import MultiValueDictKeyError
 import datetime
+from django.contrib import messages
+from django.utils.dateparse import parse_datetime
 # Create your views here.
 
+
+#region helpers
 def check_group(logged_user, group):
     return Group.objects.filter(user=logged_user, name=group).exists()
 
+
 def check_if_owned(logged_user, facil_id):
     pass
+#endregion
+
 
 def get_booking_index(request):
     return render(request, 'booking/index.html')
@@ -35,7 +43,7 @@ class register_view(View):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            user_group = Group.objects.get(name='User') 
+            user_group = Group.objects.get(name='User')
             user_group.user_set.add(user)
             return redirect(get_booking_index)
         return render(request, 'booking/register.html', {'form': form})
@@ -62,54 +70,11 @@ def logout_view(request):
     return redirect(get_booking_index)
 
 
+#region Tag
 @login_required
 def list_tags(request):
     tags = bkm.Tag.objects.all().order_by('id')
     return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags})
-
-
-class modify_facility_tags(LoginRequiredMixin, View):
-
-    def get(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-                request.user.is_superuser or check_group(request.user, "Admin")):
-
-            form_data = bkm.FacilityTag.objects.filter(facility_id=facil_id)
-            tags = bkm.Tag.objects.all()
-
-            info_tup = (facil_id, bkm.Facility.objects.get(id=facil_id).name)
-
-            return render(request, 'booking/tag/modify_facility_tags.html', {'data': form_data, 'tags': tags, 'info_tup': info_tup})
-        return redirect(get_booking_index)
-
-    def post(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-            request.user.is_superuser or check_group(request.user, "Admin")):
-
-            returned = request.POST.get('Data').split(',')
-            returned = list(map(int, returned))
-
-            current = bkm.FacilityTag.objects.filter(facility_id=facil_id)
-            current_list = []
-            for i in list(current):
-                current_list.append(i.tag_id.id)
-
-            # Get all id's that are not in the returned list
-            remove = list(set([x for x in current_list if x not in returned]))
-
-            # Get those that are not in current but are in returned
-            add = list(set(returned) - set(current_list))
-
-            for r in remove:
-                bkm.FacilityTag.objects.filter(facility_id=facil_id, tag_id=r).delete()
-
-            for a in add:
-                tg = bkm.Tag.objects.get(id=a)
-                fac = bkm.Facility.objects.get(id=facil_id)
-                new = bkm.FacilityTag(facility_id=fac, tag_id=tg)
-                new.save()
-
-        return redirect(get_booking_index)
 
 
 class edit_tag(PermissionRequiredMixin, View):
@@ -142,21 +107,29 @@ class create_tag(LoginRequiredMixin, View):
     def post(self, request):
         form = bkf.EditTagForm(request.POST)
         if form.is_valid():
-            data = Tag(shorthand=form.cleaned_data['shorthand'], description=form.cleaned_data['description'])
+            data = bkm.Tag(shorthand=form.cleaned_data['shorthand'], description=form.cleaned_data['description'])
             data.save()
         return redirect(list_tags)
+#endregion
+
+
+#region Facility
 
 # Have seperate if for each role
 @login_required
 def display_facility(request):
     if request.user.is_superuser or check_group(request.user, "Admin"):
         facilities = bkm.Facility.objects.all()
-        fac_tags = bkm.FacilityTag.objects.all()         
+        fac_tags = bkm.FacilityTag.objects.all()       
+  
     elif check_group(request.user, "Facility Owner"):
         facilities = bkm.Facility.objects.filter(admin=request.user.id)
         owned_facilities = [x.id for x in facilities]
         fac_tags = bkm.FacilityTag.objects.filter(facility_id__in=owned_facilities) 
+
     else:
+        messages.error(request, 'No Access')
+        messages.success(request, 'Another Message')
         return redirect(get_booking_index)
 
     data = []
@@ -180,14 +153,14 @@ class create_facility(LoginRequiredMixin, View):
 
         if form.is_valid():
             data = bkm.Facility(
-                admin = User.objects.get(id=request.user.id),
-                name = form.cleaned_data['name'],
-                postcode = form.cleaned_data['postcode'],
-                address = form.cleaned_data['address'],
-                indoor = form.cleaned_data['indoor'],
-                contact_email = form.cleaned_data['contact_email'],
-                contact_phone = form.cleaned_data['contact_phone'],
-                image = cloudinary.uploader.upload(request.FILES['image'])['url']
+                admin=User.objects.get(id=request.user.id),
+                name=form.cleaned_data['name'],
+                postcode=form.cleaned_data['postcode'],
+                address=form.cleaned_data['address'],
+                indoor=form.cleaned_data['indoor'],
+                contact_email=form.cleaned_data['contact_email'],
+                contact_phone=form.cleaned_data['contact_phone'],
+                image=cloudinary.uploader.upload(request.FILES['image'])['url']
             )
 
             data.save()
@@ -197,7 +170,9 @@ class create_facility(LoginRequiredMixin, View):
 class modify_facility(LoginRequiredMixin, View):
     def get(self, request, facil_id):
         if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-            request.user.is_superuser or check_group(request.user, "Admin")):
+                request.user.is_superuser or
+                check_group(request.user, "Admin")):
+
             data = bkm.Facility.objects.get(id=facil_id)
             form = bkf.FacilityForm(instance=data)
         else:
@@ -219,7 +194,7 @@ class modify_facility(LoginRequiredMixin, View):
                 data.contact_phone = form.cleaned_data['contact_phone']
                 try:
                     data.image = cloudinary.uploader.upload(request.FILES['image'])['url']
-                # No new image upload
+                # No new image to upload
                 except MultiValueDictKeyError:
                     pass            
                 data.save()
@@ -239,13 +214,145 @@ class modify_timeslots(LoginRequiredMixin, View):
             if(data.count() == 0):
                 return render(request, 'booking/timeslots/modify_timeslots.html')
 
+            # create two variables, one with the lowest timedelta and when with a high value
+            current = datetime.timedelta(hours=24, minutes=60)
+            end = datetime.timedelta(hours=0, minutes=0)
+
+            # loop once for each queryset returned
+            for d in data:
+                # check if the start value is smaller than the currently recorded one
+                _s = datetime.timedelta(hours=d.start.hour, minutes=d.start.minute)
+                # if it is, replace it
+                if _s < current:
+                    current = _s
+
+                # check if the end value is larger than the currently recorded one
+                _l = datetime.timedelta(hours=d.end.hour, minutes=d.end.minute)
+                # if it is, replace it
+                if _l > end:
+                    end = _l
+
+            # keep a backup as we will need to start from the lowest again
+            original_current = current            
+
+            # This will store the timeslot id for that time
+            # [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+            days = [0, 0, 0, 0, 0, 0, 0]
+
+            return render(request, 'booking/timeslots/modify_timeslots.html', { "data": list(data.order_by('id')), "facil_id": facil_id })
+
+        return redirect(get_booking_index)
+
+    def post(self, request, facil_id):
+        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
+                request.user.is_superuser or
+                check_group(request.user, "Admin")):
+            returned = request.POST.get('Data').split('|')
+        
+            data = []
+
+            def parse_bool(val):
+                return True
+
+            for r in returned:
+                # remove the square brackets on each end of string
+                row = r[1:-1]
+                row = row.split(',')
+                if row[0] == "new":
+                    bk = bkm.TimeSlot()
+                    bk.facility_id = bkm.Facility.objects.get(id=facil_id)
+                    bk.start = parse_datetime("1999-11-23T"+row[1]+":00")
+                    bk.end = parse_datetime("1999-11-23T"+row[2]+":00")
+                    bk.monday = True if row[3] == "true" else False
+                    bk.tuesday = True if row[4] == "true" else False
+                    bk.wednesday = True if row[5] == "true" else False
+                    bk.thursday = True if row[6] == "true" else False
+                    bk.friday = True if row[7] == "true" else False
+                    bk.saturday = True if row[8] == "true" else False
+                    bk.sunday = True if row[9] == "true" else False
+                    bk.save()
+                else:
+                    current_data = bkm.TimeSlot.objects.get(id=int(row[0]))
+                    current_data.start = parse_datetime("1999-11-23T"+row[1]+":00")
+                    current_data.end = parse_datetime("1999-11-23T"+row[2]+":00")
+                    current_data.monday = True if row[3] == "true" else False
+                    current_data.tuesday = True if row[4] == "true" else False
+                    current_data.wednesday = True if row[5] == "true" else False
+                    current_data.thursday = True if row[6] == "true" else False
+                    current_data.friday = True if row[7] == "true" else False
+                    current_data.saturday = True if row[8] == "true" else False
+                    current_data.sunday = True if row[9] == "true" else False
+                    current_data.save()
+
+        return redirect(get_booking_index)
+
+
+class modify_facility_tags(LoginRequiredMixin, View):
+
+    def get(self, request, facil_id):
+        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
+                request.user.is_superuser or check_group(request.user, "Admin")):
+
+            form_data = bkm.FacilityTag.objects.filter(facility_id=facil_id)
+            tags = bkm.Tag.objects.all()
+
+            info_tup = (facil_id, bkm.Facility.objects.get(id=facil_id).name)
+
+            return render(request, 'booking/tag/modify_facility_tags.html', {'data': form_data, 'tags': tags, 'info_tup': info_tup})
+        return redirect(get_booking_index)
+
+    def post(self, request, facil_id):
+        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
+                request.user.is_superuser or
+                check_group(request.user, "Admin")):
+
+            returned = request.POST.get('Data').split(',')
+            returned = list(map(int, returned))
+
+            current = bkm.FacilityTag.objects.filter(facility_id=facil_id)
+            current_list = []
+            for i in list(current):
+                current_list.append(i.tag_id.id)
+
+            # Get all id's that are not in the returned list
+            remove = list(set([x for x in current_list if x not in returned]))
+
+            # Get those that are not in current but are in returned
+            add = list(set(returned) - set(current_list))
+
+            for r in remove:
+                bkm.FacilityTag.objects.filter(facility_id=facil_id, tag_id=r).delete()
+
+            for a in add:
+                tg = bkm.Tag.objects.get(id=a)
+                fac = bkm.Facility.objects.get(id=facil_id)
+                new = bkm.FacilityTag(facility_id=fac, tag_id=tg)
+                new.save()
+
+        return redirect(get_booking_index)
+#endregion
+
+
+#region Booking
+class make_booking(LoginRequiredMixin, View):
+    def get(self, request, facil_id):
+        # need to remake this as many of it may be irrelevant
+        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
+            request.user.is_superuser or check_group(request.user, "Admin")):
+
+            # Get all time slots for the facility
+            data = bkm.TimeSlot.objects.filter(facility_id=facil_id)
+
+            if(data.count() == 0):
+                return render(request, 'booking/timeslots/modify_timeslots.html')
+
             # This will be used in the timetable
             table_data = []
 
             # We want to populate table_data with every 30minute interval between the earliest slot and the latest
             # So we create two variables, one with the lowest timedelta and when with a high value
-            current = datetime.timedelta(hours=24,minutes=60)
-            end = datetime.timedelta(hours=0,minutes=0)
+            current = datetime.timedelta(hours=24, minutes=60)
+            end = datetime.timedelta(hours=0, minutes=0)
 
             # loop once for each queryset returned
             for d in data:
@@ -326,10 +433,11 @@ class modify_timeslots(LoginRequiredMixin, View):
 
                 current = current + datetime.timedelta(minutes=30)
 
-            return render(request, 'booking/timeslots/modify_timeslots.html', {"data": data, "table_data": table_data})
+            return render(request, 'booking/timeslots/modify_timeslots.html', {"table_data": table_data})
 
         return redirect(get_booking_index)
 
-
-    def post(self, request, facil_id):
+    def post():
         pass
+#endregion
+
