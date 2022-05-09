@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<link rel="stylesheet" type="text/css" href="static/css/index.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
 
 <main>
     <div class="middle-splash">
@@ -13,7 +14,7 @@
     <div class="about">
         <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis gravida mi. Morbi volutpat sem sit amet dolor mattis, vel cursus risus convallis. Ut finibus orci et urna suscipit gravida. Proin eu risus ut urna rhoncus fringilla. Duis a odio aliquam, accumsan neque at, mollis magna. In porttitor ut odio in commodo. Morbi at fermentum lorem. </p> -->
         <ul class="list">
-            <li><a href="/tags">View Tags</a></li>
+            <li><a href="{% url 'list_tags' %}">View Tags</a></li>
             <li><a href="/facility">View Facilities</a></li>
         </ul>
     </div>
