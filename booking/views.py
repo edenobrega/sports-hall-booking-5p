@@ -244,46 +244,73 @@ class modify_timeslots(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
     def post(self, request, facil_id):
-        print("hehe")
         if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
                 request.user.is_superuser or
                 check_group(request.user, "Admin")):
-            returned = request.POST.get('Data').split('|')
-        
+
+            if not request.POST.get('Data'):
+                returned = []
+            else:
+                returned = request.POST.get('Data').split('|')
+            
             data = []
 
-            def parse_bool(val):
-                return True
-
+            # Parse returned into a 2d list
             for r in returned:
-                # remove the square brackets on each end of string
+                # remove the square brackets on each end of string                
                 row = r[1:-1]
                 row = row.split(',')
-                if row[0] == "new":
+                if row[0] != "new":
+                    row[0] = int(row[0])
+                row[1] = parse_datetime("1999-11-23T"+row[1]+":00")
+                row[2] = parse_datetime("1999-11-23T"+row[2]+":00")
+                row[3] = True if row[3] == "true" else False
+                row[4] = True if row[4] == "true" else False
+                row[5] = True if row[5] == "true" else False
+                row[6] = True if row[6] == "true" else False
+                row[7] = True if row[7] == "true" else False
+                row[8] = True if row[8] == "true" else False
+                row[9] = True if row[9] == "true" else False
+                data.append(row)
+
+            current = bkm.TimeSlot.objects.filter(facility_id=facil_id)
+            current_list = []
+            for c in list(current):
+                current_list.append(c.id)
+
+            current_data = [d[0] for d in data if d[0] != "new"]
+
+            # Remove each item that appears in both lists, remaining are to be removed from db
+            remove = list(set(current_list) - set(current_data))
+
+            for r in remove:
+                bkm.TimeSlot.objects.filter(facility_id=facil_id, id=r).delete()
+
+            # Add new timeslots, and update existing ones
+            for d in data:
+                bk = None
+
+                # If start date is greater than end date dont make changes
+                if d[1] > d[2]:
+                    continue
+
+                if d[0] == "new":
                     bk = bkm.TimeSlot()
                     bk.facility_id = bkm.Facility.objects.get(id=facil_id)
-                    bk.start = parse_datetime("1999-11-23T"+row[1]+":00")
-                    bk.end = parse_datetime("1999-11-23T"+row[2]+":00")
-                    bk.monday = True if row[3] == "true" else False
-                    bk.tuesday = True if row[4] == "true" else False
-                    bk.wednesday = True if row[5] == "true" else False
-                    bk.thursday = True if row[6] == "true" else False
-                    bk.friday = True if row[7] == "true" else False
-                    bk.saturday = True if row[8] == "true" else False
-                    bk.sunday = True if row[9] == "true" else False
-                    bk.save()
+
                 else:
-                    current_data = bkm.TimeSlot.objects.get(id=int(row[0]))
-                    current_data.start = parse_datetime("1999-11-23T"+row[1]+":00")
-                    current_data.end = parse_datetime("1999-11-23T"+row[2]+":00")
-                    current_data.monday = True if row[3] == "true" else False
-                    current_data.tuesday = True if row[4] == "true" else False
-                    current_data.wednesday = True if row[5] == "true" else False
-                    current_data.thursday = True if row[6] == "true" else False
-                    current_data.friday = True if row[7] == "true" else False
-                    current_data.saturday = True if row[8] == "true" else False
-                    current_data.sunday = True if row[9] == "true" else False
-                    current_data.save()
+                    bk = bkm.TimeSlot.objects.get(id=int(d[0]))
+                
+                bk.start = d[1]
+                bk.end = d[2]
+                bk.monday = d[3]
+                bk.tuesday = d[4]
+                bk.wednesday = d[5]
+                bk.thursday = d[6]
+                bk.friday = d[7]
+                bk.saturday = d[8]
+                bk.sunday = d[9]
+                bk.save()
 
         return redirect(get_booking_index)
 
@@ -310,6 +337,7 @@ class modify_facility_tags(LoginRequiredMixin, View):
             returned = request.POST.get('Data').split(',')
             returned = list(map(int, returned))
 
+            # Get all tags currently in table for that facility
             current = bkm.FacilityTag.objects.filter(facility_id=facil_id)
             current_list = []
             for i in list(current):
@@ -319,6 +347,7 @@ class modify_facility_tags(LoginRequiredMixin, View):
             remove = list(set([x for x in current_list if x not in returned]))
 
             # Get those that are not in current but are in returned
+            #   turn to sets so that they can be subtracted from eachtother
             add = list(set(returned) - set(current_list))
 
             for r in remove:

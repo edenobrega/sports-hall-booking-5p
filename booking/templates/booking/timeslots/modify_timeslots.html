@@ -12,16 +12,17 @@ crossorigin="anonymous"></script>
 <main>
     <table id="slot-table">
         <tr>
-            <td>id</td>
-            <td>start</td>
-            <td>end</td>
-            <td>Monday</td>
-            <td>Tuesday</td>
-            <td>Wednesday</td>
-            <td>Thursday</td>
-            <td>Friday</td>
-            <td>Saturday</td>
-            <td>Sunday</td>
+            <th>id</th>
+            <th>start</th>
+            <th>end</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+            <th>Remove</th>
         </tr>
     
         {% for slot in data %}
@@ -36,6 +37,7 @@ crossorigin="anonymous"></script>
                 <td><input type="checkbox" {% if slot.friday %} checked {% endif %} /></td>
                 <td><input type="checkbox" {% if slot.saturday %} checked {% endif %} /></td>
                 <td><input type="checkbox" {% if slot.sunday %} checked {% endif %} /></td>
+                <td><button onclick="removeTimeSlot('slot-{{slot.id}}')">Remove</button></td>
             </tr>
         {% endfor %}
     </table>
@@ -52,7 +54,7 @@ crossorigin="anonymous"></script>
         $('#slot-table tr:last').after(
             [
                 '<tr id="slot-'+id+'">',
-                '<td></td>',
+                '<td>New</td>',
                 '<td><input type="time" autocomplete="off" /></td>',
                 '<td><input type="time" autocomplete="off" /></td>',
                 '<td><input type="checkbox" {% if slot.monday %} checked {% endif %} /></td>',
@@ -61,10 +63,15 @@ crossorigin="anonymous"></script>
                 '<td><input type="checkbox" /></td>',
                 '<td><input type="checkbox" /></td>',
                 '<td><input type="checkbox" /></td>',
-                '<td><input type="checkbox" /></td>'
-            ].join(' ')
+                '<td><input type="checkbox" /></td>',
+                '<td><button onclick="removeTimeSlot(', "'slot-"+id+ "')" +'"' + ">Remove</button></td>"
+            ].join('')
         )
         id += 1;
+    }
+
+    function removeTimeSlot(id){
+        $("#"+id).remove();
     }
 
     function submit(){
