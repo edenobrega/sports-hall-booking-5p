@@ -16,12 +16,28 @@ from django.utils.dateparse import parse_datetime
 
 
 #region helpers
+# Current Groups:
+#   "Admin"
+#   "Facility Owner"
+#   "User"
+
 def check_group(logged_user, group):
     return Group.objects.filter(user=logged_user, name=group).exists()
 
 
+# pass request.user to logged_user
 def check_if_owned(logged_user, facil_id):
-    pass
+    if (bkm.Facility.objects.filter(id=facil_id, admin=logged_user.id) or
+        logged_user.is_superuser or
+        check_group(logged_user, "Admin")):
+
+        return True
+    return False
+
+# As a method incase i make users who are not super_user able to edit certain pieces of data
+#   e.g. only super_user may add or remove tags
+def check_if_super(logged_user):
+    return logged_user.is_superuser
 #endregion
 
 
@@ -73,43 +89,51 @@ def logout_view(request):
 #region Tag
 @login_required
 def list_tags(request):
-    tags = bkm.Tag.objects.all().order_by('id')
-    return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags})
+    if check_if_super(request.user):
+        tags = bkm.Tag.objects.all().order_by('id')
+        return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags})
+    return redirect(get_booking_index)
 
 
-class edit_tag(PermissionRequiredMixin, View):
-
-    permission_required = ('tag.can_edit')
-
+class edit_tag(LoginRequiredMixin, View):
     def get(self, request, tag_id):
-        data = bkm.Tag.objects.get(id=tag_id)
-        form = bkf.EditTagForm(instance=data)
-        return render(request, 'booking/tag/modify_tag.html', {'form': form})
+        if check_if_super(request.user):
+            data = bkm.Tag.objects.get(id=tag_id)
+            form = bkf.EditTagForm(instance=data)
+            return render(request, 'booking/tag/modify_tag.html', {'form': form})
+        messages.error(request, 'No Access')
+        return redirect(get_booking_index)
 
     def post(self, request, tag_id):
-        form = bkf.EditTagForm(request.POST)
-        if form.is_valid():
-            data = bkm.Tag.objects.get(id=tag_id)
-            data.shorthand = form.cleaned_data['shorthand']
-            data.description = form.cleaned_data['description']
-            data.save()
-        return redirect(list_tags)
+        if check_if_super(request.user):
+            form = bkf.EditTagForm(request.POST)
+            if form.is_valid():
+                data = bkm.Tag.objects.get(id=tag_id)
+                data.shorthand = form.cleaned_data['shorthand']
+                data.description = form.cleaned_data['description']
+                data.save()
+            return redirect(list_tags)
+        messages.error(request, 'No Access')
+        return redirect(get_booking_index)
 
 
 class create_tag(LoginRequiredMixin, View):
-
-    permission_required = ('tag.can_create')
-
     def get(self, request):
-        form = bkf.EditTagForm()
-        return render(request, 'booking/tag/modify_tag.html', {'form': form})
+        if check_if_super(request.user):
+            form = bkf.EditTagForm()
+            return render(request, 'booking/tag/modify_tag.html', {'form': form})
+        messages.error(request, 'No Access')
+        return redirect(get_booking_index)
 
     def post(self, request):
-        form = bkf.EditTagForm(request.POST)
-        if form.is_valid():
-            data = bkm.Tag(shorthand=form.cleaned_data['shorthand'], description=form.cleaned_data['description'])
-            data.save()
-        return redirect(list_tags)
+        if check_if_super(request.user):
+            form = bkf.EditTagForm(request.POST)
+            if form.is_valid():
+                data = bkm.Tag(shorthand=form.cleaned_data['shorthand'], description=form.cleaned_data['description'])
+                data.save()
+            return redirect(list_tags)
+        messages.error(request, 'No Access')
+        return redirect(get_booking_index)
 #endregion
 
 
@@ -118,7 +142,7 @@ class create_tag(LoginRequiredMixin, View):
 # Have seperate if for each role
 @login_required
 def display_facility(request):
-    if request.user.is_superuser or check_group(request.user, "Admin"):
+    if check_if_super(request.user) or check_group(request.user, "Admin"):
         facilities = bkm.Facility.objects.all()
         fac_tags = bkm.FacilityTag.objects.all()       
   
@@ -129,7 +153,6 @@ def display_facility(request):
 
     else:
         messages.error(request, 'No Access')
-        messages.success(request, 'Another Message')
         return redirect(get_booking_index)
 
     data = []
@@ -141,30 +164,32 @@ def display_facility(request):
 
 
 class create_facility(LoginRequiredMixin, View):
-
-    permission_required = ('facility.can_create')
-
     def get(self, request):
-        form = bkf.FacilityForm
-        return render(request, 'booking/facility/add_facility.html', {'form': form})
-        
+        if check_if_super(request.user) or check_group(request.user, "Admin"):
+            form = bkf.FacilityForm
+            return render(request, 'booking/facility/add_facility.html', {'form': form})
+        messages.error(request, 'No Access')
+        return redirect(get_booking_index)
+
     def post(self, request):
-        form = bkf.FacilityForm(request.POST)
+        if check_if_super(request.user) or check_group(request.user, "Admin"):
+            form = bkf.FacilityForm(request.POST)
 
-        if form.is_valid():
-            data = bkm.Facility(
-                admin=User.objects.get(id=request.user.id),
-                name=form.cleaned_data['name'],
-                postcode=form.cleaned_data['postcode'],
-                address=form.cleaned_data['address'],
-                indoor=form.cleaned_data['indoor'],
-                contact_email=form.cleaned_data['contact_email'],
-                contact_phone=form.cleaned_data['contact_phone'],
-                image=cloudinary.uploader.upload(request.FILES['image'])['url']
-            )
-
-            data.save()
-        return redirect(display_facility)
+            if form.is_valid():
+                data = bkm.Facility(
+                    admin=User.objects.get(id=request.user.id),
+                    name=form.cleaned_data['name'],
+                    postcode=form.cleaned_data['postcode'],
+                    address=form.cleaned_data['address'],
+                    indoor=form.cleaned_data['indoor'],
+                    contact_email=form.cleaned_data['contact_email'],
+                    contact_phone=form.cleaned_data['contact_phone'],
+                    image=cloudinary.uploader.upload(request.FILES['image'])['url']
+                )
+                data.save()
+            return redirect(display_facility)
+        messages.error(request, 'No Access')
+        return redirect(get_booking_index)
 
 
 class modify_facility(LoginRequiredMixin, View):
@@ -205,8 +230,7 @@ class modify_facility(LoginRequiredMixin, View):
 class modify_timeslots(LoginRequiredMixin, View):
 
     def get(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-            request.user.is_superuser or check_group(request.user, "Admin")):
+        if check_if_owned(request.user, facil_id) or check_group(request.user, "Admin"):
 
             # Get all time slots for the facility
             data = bkm.TimeSlot.objects.filter(facility_id=facil_id)
@@ -244,9 +268,7 @@ class modify_timeslots(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
     def post(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-                request.user.is_superuser or
-                check_group(request.user, "Admin")):
+        if check_if_owned(request.user, facil_id) or check_group(request.user, "Admin"):
 
             if not request.POST.get('Data'):
                 returned = []
@@ -318,9 +340,7 @@ class modify_timeslots(LoginRequiredMixin, View):
 class modify_facility_tags(LoginRequiredMixin, View):
 
     def get(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-                request.user.is_superuser or check_group(request.user, "Admin")):
-
+        if check_if_owned(request.user, facil_id) or check_group(request.user, "Admin"):
             form_data = bkm.FacilityTag.objects.filter(facility_id=facil_id)
             tags = bkm.Tag.objects.all()
 
@@ -330,10 +350,7 @@ class modify_facility_tags(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
     def post(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-                request.user.is_superuser or
-                check_group(request.user, "Admin")):
-
+        if check_if_owned(request.user, facil_id) or check_group(request.user, "Admin"):
             returned = request.POST.get('Data').split(',')
             returned = list(map(int, returned))
 
