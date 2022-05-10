@@ -212,7 +212,7 @@ class modify_timeslots(LoginRequiredMixin, View):
             data = bkm.TimeSlot.objects.filter(facility_id=facil_id)
 
             if(data.count() == 0):
-                return render(request, 'booking/timeslots/modify_timeslots.html')
+                return render(request, 'booking/timeslots/modify_timeslots.html', { "facil_id": facil_id })
 
             # create two variables, one with the lowest timedelta and when with a high value
             current = datetime.timedelta(hours=24, minutes=60)
@@ -238,12 +238,13 @@ class modify_timeslots(LoginRequiredMixin, View):
             # This will store the timeslot id for that time
             # [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
             days = [0, 0, 0, 0, 0, 0, 0]
-
+            
             return render(request, 'booking/timeslots/modify_timeslots.html', { "data": list(data.order_by('id')), "facil_id": facil_id })
 
         return redirect(get_booking_index)
 
     def post(self, request, facil_id):
+        print("hehe")
         if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
                 request.user.is_superuser or
                 check_group(request.user, "Admin")):

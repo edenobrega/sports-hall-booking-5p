@@ -45,8 +45,9 @@ crossorigin="anonymous"></script>
 </main>
 
 <script>
-    let id = {% with data|last as last %}{{last.id}}{% endwith %} + 1;
-    let final_id = {% with data|last as last %}{{last.id}}{% endwith %};
+    let id = {% if data %}{% with data|last as last %}{{last.id}}{% endwith %}{% else %}0{% endif %} + 1;
+    let final_id = {% if data %}{% with data|last as last %}{{last.id}}{% endwith %}{% else %}0{% endif %};
+
     function addTimeSlot(){
         $('#slot-table tr:last').after(
             [
