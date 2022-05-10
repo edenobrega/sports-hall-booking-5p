@@ -5,3 +5,12 @@ main{
 table{
     margin: auto;
 }
+
+.hide{
+    visibility: hidden;
+    display:none;
+}
+
+.header{
+    text-decoration: underline;
+}

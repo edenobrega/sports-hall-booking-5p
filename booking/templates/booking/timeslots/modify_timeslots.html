@@ -10,6 +10,7 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/modify_timeslots.css' %}">
 
 <main>
+    <h2 class="hide header">Start time must be before the End time</h2>
     <table id="slot-table">
         <tr>
             <th>id</th>
@@ -49,6 +50,7 @@ crossorigin="anonymous"></script>
 <script>
     let id = {% if data %}{% with data|last as last %}{{last.id}}{% endwith %}{% else %}0{% endif %} + 1;
     let final_id = {% if data %}{% with data|last as last %}{{last.id}}{% endwith %}{% else %}0{% endif %};
+    let message_header = $(".hide");
 
     function addTimeSlot(){
         $('#slot-table tr:last').after(
@@ -78,9 +80,28 @@ crossorigin="anonymous"></script>
         tableData = "";
         table_rows = $("tr");
 
+        form_fail = false;
+
+        time_inputs = $("input[type=time]");
+        // check if times are valid
+        for(let i = 0; i < time_inputs.length; i+=2){
+            if(time_inputs[i].value > time_inputs[i+1].value){
+                time_inputs[i].style.backgroundColor = "red";
+                time_inputs[i+1].style.backgroundColor = "red";
+                message_header.removeClass("hide");
+                form_fail = true;
+            }
+            else{
+                time_inputs[i].style.backgroundColor = "";
+                time_inputs[i+1].style.backgroundColor = "";
+            }
+        }
+
+        if(form_fail){
+            return;
+        }
+
         for (let i = 1; i < table_rows.length; i++){
-
-
             // if id is greater than the largest id from the original list
             if(table_rows[i].id.split("-")[1] > final_id){
                 let row = $("#"+table_rows[i].id+" td");
