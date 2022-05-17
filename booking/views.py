@@ -12,6 +12,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 import datetime
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime
+from geopy.geocoders import Nominatim
 # Create your views here.
 
 
@@ -44,6 +45,8 @@ def check_if_super(logged_user):
 def get_booking_index(request):
     return render(request, 'booking/index.html')
 
+def get_map_test(request):
+    return render(request, 'map_test.html')
 
 class register_view(View):
 
@@ -172,15 +175,35 @@ class create_facility(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
     def post(self, request):
+        print("hehe")
         if check_if_super(request.user) or check_group(request.user, "Admin"):
             form = bkf.FacilityForm(request.POST)
-
+            print(form.is_valid())
             if form.is_valid():
+                geo = Nominatim(user_agent="bookit_app")
+                loc = geo.geocode(query={
+                    "street": form.cleaned_data['address'],
+                    "postalcode": form.cleaned_data['postcode'],
+                    "country": "gb"})
+                if not loc:
+                    loc = geo.geocode(query={
+                        "postalcode": form.cleaned_data['postcode'],
+                        "country": "gb"})
+                if not loc:
+                    # Default to location of code institute :)
+                    long = 53.2978186
+                    lat = -6.1823261
+                else:
+                    long = loc.longitude
+                    lat = loc.latitude
+
                 data = bkm.Facility(
                     admin=User.objects.get(id=request.user.id),
                     name=form.cleaned_data['name'],
                     postcode=form.cleaned_data['postcode'],
                     address=form.cleaned_data['address'],
+                    longitude=long,
+                    latitude=lat,
                     indoor=form.cleaned_data['indoor'],
                     contact_email=form.cleaned_data['contact_email'],
                     contact_phone=form.cleaned_data['contact_phone'],
@@ -480,7 +503,7 @@ class make_booking(LoginRequiredMixin, View):
 
                 current = current + datetime.timedelta(minutes=30)
 
-            return render(request, 'booking/timeslots/modify_timeslots.html', {"table_data": table_data})
+            return render(request, 'booking/timeslots/make_booking.html', {"table_data": table_data})
 
         return redirect(get_booking_index)
 

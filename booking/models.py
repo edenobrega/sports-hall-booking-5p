@@ -10,6 +10,8 @@ class Facility(models.Model):
     name = models.CharField(max_length=100)
     postcode = models.CharField(max_length=8)
     address = models.CharField(max_length=200)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
     indoor = models.BooleanField()
     contact_email = models.CharField(max_length=100)
     contact_phone = models.CharField(max_length=15)

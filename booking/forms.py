@@ -24,8 +24,8 @@ class FacilityForm(forms.ModelForm):
     class Meta:
         model = bkm.Facility
         fields = '__all__'
-        widgets = {'admin': forms.HiddenInput()}
-        exclude = ('admin', )
+        widgets = {'admin': forms.HiddenInput(), 'longitude': forms.HiddenInput(), 'latitude': forms.HiddenInput()}
+        exclude = ('admin', 'longitude', 'latitude',)
 
 
 class FacilityTagForm(forms.Form):
