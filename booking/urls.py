@@ -25,5 +25,20 @@ urlpatterns = [
     path(
         'facility/times/modify/<int:facil_id>',
         bkv.modify_timeslots.as_view(),
-        name='modify_slots')
+        name='modify_slots'),
+    path(
+        'facility/book/<int:facil_id>',
+        bkv.make_booking.as_view(),
+        name='view_booking'
+    ),
+    path(
+        'map_test',
+        bkv.get_map_test,
+        name='map_test'
+    ),
+    path(
+        'search/<int:sport_tag>/<str:location_search_area>/<int:radius>',
+        bkv.search_facilities,
+        name='search_facilities'
+    )
 ]

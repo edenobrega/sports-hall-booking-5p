@@ -13,6 +13,7 @@ import datetime
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime
 from geopy.geocoders import Nominatim
+import math
 # Create your views here.
 
 
@@ -45,8 +46,10 @@ def check_if_super(logged_user):
 def get_booking_index(request):
     return render(request, 'booking/index.html')
 
+
 def get_map_test(request):
     return render(request, 'map_test.html')
+
 
 class register_view(View):
 
@@ -404,6 +407,51 @@ class modify_facility_tags(LoginRequiredMixin, View):
 
 
 #region Booking
+def search_facilities(request, sport_tag, location_search_area, radius):
+    '''
+    takes facil_tag as a number, 
+    location_search_area as a string, center of the radius
+    radius, the  area of which to retrun facilities, in miles
+    '''
+    def get_distance(lat1, lon1, lat2, lon2):
+        '''
+        Get the distance between two locations
+        '''
+        def deg2rad(deg):
+            return deg * (math.pi/180)
+
+        earth = 6371
+        dLat = deg2rad(lat2-lat1)
+        dLon = deg2rad(lon2-lon1)
+
+        a = (
+            math.sin(dLat/2) * math.sin(dLat/2) +
+            math.cos(deg2rad(lat1)) * math.cos(deg2rad(lat2)) *
+            math.sin(dLon/2) * math.sin(dLon/2)
+            )
+
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        d = earth * c
+        return d / 1.609
+
+    # Get list of facilities that have the asked for tag
+    vals = bkm.FacilityTag.objects.filter(tag_id=sport_tag)
+    vals = [x.facility_id for x in vals]
+    
+    # Get the center of the radius
+    geo = Nominatim(user_agent="bookit_app")
+    loc = geo.geocode(query=location_search_area, country_codes=["gb"])
+    loc = (loc.longitude, loc.latitude)
+
+    # Get all that are within the radius
+    valid = []
+    for v in vals:
+        if get_distance(loc[1], loc[0], float(v.latitude), float(v.longitude)) <= radius:
+            print(v.name + " is in the radius")
+            valid.append(v)
+    
+    return render(request, 'booking/search_results.html', {"returned": valid})
+
 class make_booking(LoginRequiredMixin, View):
     def get(self, request, facil_id):
         # need to remake this as many of it may be irrelevant
