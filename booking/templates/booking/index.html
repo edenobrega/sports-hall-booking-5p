@@ -6,9 +6,19 @@
 
 <main>
     <div class="middle-splash">
-        <div class="search-bar">
-            <input type="search" />
-        </div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {{ form.source.errors }}
+            {{ form.source }}
+
+            {{ form.sports_tag }}
+            {{ form.location }}
+            {{ form.distance }}
+
+            <button type="submit">Save Changes</button>
+        </form>
     </div>
 
     <div class="about">
