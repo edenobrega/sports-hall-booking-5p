@@ -31,3 +31,16 @@ class FacilityForm(forms.ModelForm):
 class FacilityTagForm(forms.Form):
     new_tags = forms.CharField(max_length=200)
     remove_tags = forms.CharField(max_length=200)
+
+
+class SearchForm(forms.Form):
+    sports_tag = forms.ModelChoiceField(queryset=bkm.Tag.objects.all().order_by('id'))
+    location = forms.CharField(min_length=3, max_length=100)
+    distance = forms.ChoiceField(choices=(
+        (1, "1"), 
+        (2, "2"), 
+        (5, "5"), 
+        (10, "10"), 
+        (15, "15"), 
+        (20, "20"),
+        (25, "25")))
