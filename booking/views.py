@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.utils.dateparse import parse_datetime
 from geopy.geocoders import Nominatim
 import math
+import calendar
 # Create your views here.
 
 
@@ -459,110 +460,92 @@ class modify_facility_tags(LoginRequiredMixin, View):
 
 
 #region Booking
-class make_booking(LoginRequiredMixin, View):
+class view_times(LoginRequiredMixin, View):
     def get(self, request, facil_id):
-        # need to remake this as many of it may be irrelevant
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
-            request.user.is_superuser or check_group(request.user, "Admin")):
+        times = bkm.TimeSlot.objects.filter(facility_id=facil_id)
+        bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
-            # Get all time slots for the facility
-            data = bkm.TimeSlot.objects.filter(facility_id=facil_id)
+        # month as a int, 1 - 12
+        def build_calendar(year, month):
+            '''
+            returns a 2d list containing: 
+            Day: e.g. 1st, 2nd, 31st etc etc
+            Day of week: Mainly for matching timeslots with the arrays in this function
+            timeslots: a list of timeslot id's that fall on this day, followed by a bool
+                to indicate if the time slot is currently take on that day
+            '''
+            calendar_rows = []
+            month_data = calendar.monthrange(year, month)
 
-            if(data.count() == 0):
-                return render(request, 'booking/timeslots/modify_timeslots.html')
+            # [day, day of week] 
+            row = []
 
-            # This will be used in the timetable
-            table_data = []
+            for i in range(0, month_data[0]):
+                row.append([0])
 
-            # We want to populate table_data with every 30minute interval between the earliest slot and the latest
-            # So we create two variables, one with the lowest timedelta and when with a high value
-            current = datetime.timedelta(hours=24, minutes=60)
-            end = datetime.timedelta(hours=0, minutes=0)
+            day_of_week = 0
+            day = 1
+            for i in range(month_data[0], 7):
+                day_of_week = i
+                row.append([day, calendar.day_abbr[i], []])
+                day += 1
 
-            # loop once for each queryset returned
-            for d in data:
-                # check if the start value is smaller than the currently recorded one
-                _s = datetime.timedelta(hours=d.start.hour, minutes=d.start.minute)
-                # if it is, replace it
-                if _s < current:
-                    current = _s
+            calendar_rows.append(row)
+            row = []
 
-                # check if the end value is larger than the currently recorded one
-                _l = datetime.timedelta(hours=d.end.hour, minutes=d.end.minute)
-                # if it is, replace it
-                if _l > end:
-                    end = _l
+            week_counter = 1
+            while day != month_data[1]+1:
+                row.append([day, calendar.day_abbr[week_counter-1], []])
+                if week_counter == 7:
+                    calendar_rows.append(row)
+                    row = []
+                    week_counter = 0
+            
+                week_counter += 1
+                day += 1
 
-            # keep a backup as we will need to start from the lowest again
-            original_current = current            
+            if row != []:
+                calendar_rows.append(row)
 
-            # This will store the timeslot id for that time
-            # [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
-            days = [0, 0, 0, 0, 0, 0, 0]
+            for cr in calendar_rows:
+                for day in cr:
+                    if day[0] == 0:
+                        continue
+                    if day[1] == "Mon":
+                        day[2] = [[x.id, False] for x in times if x.monday]
+                    elif day[1] == "Tue":
+                        day[2] = [[x.id, False] for x in times if x.tuesday]         
+                    elif day[1] == "Wed":
+                        day[2] = [[x.id, False] for x in times if x.wednesday]
+                    elif day[1] == "Thu":
+                        day[2] = [[x.id, False] for x in times if x.thursday]
+                    elif day[1] == "Fri":
+                        day[2] = [[x.id, False] for x in times if x.friday]
+                    elif day[1] == "Sat":
+                        day[2] = [[x.id, False] for x in times if x.saturday]
+                    elif day[1] == "Sun":
+                        day[2] = [[x.id, False] for x in times if x.sunday]
 
-            # Add a new time to table_data for every 30min interval between earliest and latest times
-            while current != end:
-                table_data.append([current, days[0], days[1], days[2], days[3], days[4], days[5], days[6]])
-                current = current + datetime.timedelta(minutes=30)
-            table_data.append([current, days[0], days[1], days[2], days[3], days[4], days[5], days[6]])
+            return calendar_rows
+        
+        x = build_calendar(
+            datetime.datetime.now().year, 
+            datetime.datetime.now().month)
+        print(x)
+        y = build_calendar(
+            datetime.datetime.now().year, 
+            datetime.datetime.now().month + 1)
 
-            # This places the timeslot id in the correct position in the days array
-            def lay_table(num):
-                # read loop below before reading these comments
-
-                # (ret is defined before lay_table call in loop below)
-                # Get the start and end time of the current slot
-                _e = ret[0].end.time()
-                _s = ret[0].start.time()
-
-                # Turn those times into timedeltas
-                e = datetime.timedelta(hours=_e.hour, minutes=_e.minute)
-                s = datetime.timedelta(hours=_s.hour, minutes=_s.minute)
-
-                # Loop once foreach 30min interval between the start and end
-                for j in range(int((e - s)/datetime.timedelta(minutes=30))+1):
-                    # If a value is already in that slot, place a "|" and then the value,
-                    #   as that will the end of the previous slot and start of the next
-                    if table_data[i + j][num] != 0:
-                        table_data[i + j][num] = str(table_data[i + j][num]) + "|" + str(ret[0].id)
-                    # If not then just place the id
-                    else:
-                        table_data[i + j][num] = ret[0].id
-
-            # reset the earliest point for next loop
-            current = original_current
-            for i, k in enumerate(table_data):
-                days = [0, 0, 0, 0, 0, 0, 0]
-
-                # Get a timeslot with the same start as current
-                ret = data.filter(start__time=str(current))
-                
-                # If a timeslot was found
-                if ret:
-                    # Check if timeslot is active on each day of the week
-                    # If it is, then run lay_table
-                    if ret[0].monday:
-                        lay_table(1)
-                    if ret[0].tuesday:
-                        lay_table(2)
-                    if ret[0].wednesday:
-                        lay_table(3)
-                    if ret[0].thursday:
-                        lay_table(4)
-                    if ret[0].friday:
-                        lay_table(5)
-                    if ret[0].saturday:
-                        lay_table(6)
-                    if ret[0].sunday:
-                        lay_table(7)
-
-                current = current + datetime.timedelta(minutes=30)
-
-            return render(request, 'booking/timeslots/make_booking.html', {"table_data": table_data})
-
-        return redirect(get_booking_index)
+        return render(request, 'booking/book/view_times.html')
 
     def post():
+        pass
+
+class list_facility_bookings(LoginRequiredMixin, View):
+    def get(self, request, facil_id):
+        pass
+
+    def post(self, request, facil_id):
         pass
 #endregion
 

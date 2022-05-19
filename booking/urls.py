@@ -28,12 +28,12 @@ urlpatterns = [
         name='modify_slots'),
     path(
         'facility/book/<int:facil_id>',
-        bkv.make_booking.as_view(),
-        name='view_booking'
+        bkv.view_times.as_view(),
+        name='view_times'
     ),
     path(
-        'map_test',
-        bkv.get_map_test,
-        name='map_test'
+        'facility/book/list/<int:facil_id>',
+        bkv.list_facility_bookings.as_view(),
+        name='list_facility_bookings'
     ),
 ]
