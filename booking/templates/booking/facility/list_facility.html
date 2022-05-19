@@ -35,9 +35,9 @@
                     {% endfor %}
                 </td>
                 <td><img src="{{d.0.image}}" /></td>
-                <td><a href="modify/{{d.0.id}}">Modify</a></td>
-                <td><a href="tags/modify/{{d.0.id}}">Modify</a></td>
-                <td><a href="times/modify/{{d.0.id}}">Modify</a></td>
+                <td><a href="{% url 'modify_facility' d.0.id %}">Modify</a></td>
+                <td><a href="{% url 'modify_facility_tags' d.0.id %}">Modify</a></td>
+                <td><a href="{% url 'modify_slots' d.0.id %}">Modify</a></td>
             </tr>
         {% endfor %}
     </table>    
