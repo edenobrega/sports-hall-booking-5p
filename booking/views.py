@@ -543,8 +543,9 @@ class view_times(LoginRequiredMixin, View):
 
 class list_facility_bookings(LoginRequiredMixin, View):
     def get(self, request, facil_id):
-        pass
+        bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
+        return render(request, 'booking/book/view_bookings.html', {'bookings':bookings})
     def post(self, request, facil_id):
         pass
 #endregion
