@@ -466,7 +466,7 @@ class view_times(LoginRequiredMixin, View):
         bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
         # month as a int, 1 - 12
-        def build_calendar(year, month):
+        def build_data(year, month):
             '''
             returns a 2d list containing: 
             Day: e.g. 1st, 2nd, 31st etc etc
@@ -474,10 +474,9 @@ class view_times(LoginRequiredMixin, View):
             timeslots: a list of timeslot id's that fall on this day, followed by a bool
                 to indicate if the time slot is currently take on that day
             '''
-            calendar_rows = []
+            calendar_rows = [month]
             month_data = calendar.monthrange(year, month)
 
-            # [day, day of week] 
             row = []
 
             for i in range(0, month_data[0]):
@@ -507,7 +506,8 @@ class view_times(LoginRequiredMixin, View):
             if row != []:
                 calendar_rows.append(row)
 
-            for cr in calendar_rows:
+            # Skip first value as it holds the month
+            for cr in calendar_rows[1:]:
                 for day in cr:
                     if day[0] == 0:
                         continue
@@ -526,17 +526,37 @@ class view_times(LoginRequiredMixin, View):
                     elif day[1] == "Sun":
                         day[2] = [[x.id, False] for x in times if x.sunday]
 
+            found = False
+            # Loop over each booking
+            for b in bookings:
+                # loop over each row of calendar
+                for cr in calendar_rows[1:]:
+                    if found:
+                        found = False
+                        break
+                    # loop over each day
+                    for day in cr:
+                        # Check if days match
+                        if day[0] == b.date.day and calendar_rows[0] == month:
+                            # Find the index of the taken flag
+                            dex = day[2].index([b.time_slot.id, False])
+                            # Set the flag to true
+                            day[2][dex][1] = True
+                            # Indicate to outside flag to no longer loop
+                            found = True
+                            break
+
             return calendar_rows
         
-        x = build_calendar(
-            datetime.datetime.now().year, 
+        x = build_data(
+            datetime.datetime.now().year,
             datetime.datetime.now().month)
-        print(x)
-        y = build_calendar(
-            datetime.datetime.now().year, 
+
+        y = build_data(
+            datetime.datetime.now().year,
             datetime.datetime.now().month + 1)
 
-        return render(request, 'booking/book/view_times.html')
+        return render(request, 'booking/book/view_times.html', {'current_month':x, "next_month":y})
 
     def post():
         pass
@@ -545,7 +565,7 @@ class list_facility_bookings(LoginRequiredMixin, View):
     def get(self, request, facil_id):
         bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
-        return render(request, 'booking/book/view_bookings.html', {'bookings':bookings})
+        return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
     def post(self, request, facil_id):
         pass
 #endregion

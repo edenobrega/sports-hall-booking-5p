@@ -5,6 +5,7 @@
 <table>
     <tr>
         <th>Facility ID</th>
+        <th>Time Slot ID</th>
         <th>Booking ID</th>
         <th>Facility</th>
         <th>Time Slot User</th>
@@ -15,6 +16,7 @@
 {% for b in bookings %}
 <tr>
     <td>{{ b.facility_id.id }}</td>
+    <td>{{ b.time_slot.id }}</td>
     <td>{{ b.id }}</td>
     <td>{{ b.facility_id }}</td>
     <td>{{ b.user_id }}</td>
