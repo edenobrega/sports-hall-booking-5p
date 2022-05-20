@@ -474,6 +474,7 @@ class view_times(LoginRequiredMixin, View):
             timeslots: a list of timeslot id's that fall on this day, followed by a bool
                 to indicate if the time slot is currently take on that day
             '''
+
             calendar_rows = [month]
             month_data = calendar.monthrange(year, month)
 
@@ -512,19 +513,19 @@ class view_times(LoginRequiredMixin, View):
                     if day[0] == 0:
                         continue
                     if day[1] == "Mon":
-                        day[2] = [[x.id, False] for x in times if x.monday]
+                        day[2] = [[x, False] for x in times if x.monday]
                     elif day[1] == "Tue":
-                        day[2] = [[x.id, False] for x in times if x.tuesday]         
+                        day[2] = [[x, False] for x in times if x.tuesday]
                     elif day[1] == "Wed":
-                        day[2] = [[x.id, False] for x in times if x.wednesday]
+                        day[2] = [[x, False] for x in times if x.wednesday]
                     elif day[1] == "Thu":
-                        day[2] = [[x.id, False] for x in times if x.thursday]
+                        day[2] = [[x, False] for x in times if x.thursday]
                     elif day[1] == "Fri":
-                        day[2] = [[x.id, False] for x in times if x.friday]
+                        day[2] = [[x, False] for x in times if x.friday]
                     elif day[1] == "Sat":
-                        day[2] = [[x.id, False] for x in times if x.saturday]
+                        day[2] = [[x, False] for x in times if x.saturday]
                     elif day[1] == "Sun":
-                        day[2] = [[x.id, False] for x in times if x.sunday]
+                        day[2] = [[x, False] for x in times if x.sunday]
 
             found = False
             # Loop over each booking
@@ -537,9 +538,9 @@ class view_times(LoginRequiredMixin, View):
                     # loop over each day
                     for day in cr:
                         # Check if days match
-                        if day[0] == b.date.day and calendar_rows[0] == month:
+                        if day[0] == b.date.day and b.date.month == month:
                             # Find the index of the taken flag
-                            dex = day[2].index([b.time_slot.id, False])
+                            dex = day[2].index([b.time_slot, False])
                             # Set the flag to true
                             day[2][dex][1] = True
                             # Indicate to outside flag to no longer loop
@@ -556,7 +557,12 @@ class view_times(LoginRequiredMixin, View):
             datetime.datetime.now().year,
             datetime.datetime.now().month + 1)
 
-        return render(request, 'booking/book/view_times.html', {'current_month':x, "next_month":y})
+        return render(request, 'booking/book/view_times.html', 
+        {
+            'current_month': x,
+            'next_month': y,
+            'timeslots': times
+        })
 
     def post():
         pass
