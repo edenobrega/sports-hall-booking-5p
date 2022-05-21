@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content%}
+<link rel="stylesheet" type="text/css" href="/static/css/calender.css">
+<script
+src="https://code.jquery.com/jquery-3.6.0.min.js"
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+crossorigin="anonymous"></script>
+
+<main>
+    <div id="calendar">
+        <table>
+            <tr>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+            </tr>
+
+            {% for cm in current_month|slice:"1:" %}
+            <tr>
+                {% for row in cm %}
+                    {% if row.0 == 0 %}
+                        <td></td>
+                    {% elif row.2|length == 0%}
+                        <td class="">{{row.0}}</td>
+                    {% else %}
+                        <td class="calendar-clickable" onclick="revealSlots('month-{{current_month.0}}-day-{{row.0}}')">{{row.0}}</td>
+                    {% endif %}
+                    
+                {% endfor %}            
+            </tr>    
+            {% endfor %}
+        </table>
+    </div>
+
+    <div id="slot-holder">
+        <table>
+            <tr>
+                <th>Day</th>
+                <th>Start</th>
+                <th>End</th>
+                <th></th>
+            </tr>
+            {% for cm in current_month|slice:"1:" %}
+                {% for row in cm %}
+                    {% if row.0 != 0 and row.2|length != 0 %}
+                        {% for slot in row.2 %}
+                            {% if slot.1 %}
+                            <tr class="month-{{current_month.0}}-day-{{row.0}} booked hidden">
+                                <td>{{row.0}}</td>
+                                <td>{{slot.0.start|time:'H:i'}}</td>
+                                <td>{{slot.0.end|time:'H:i'}}</td>
+                            </tr>
+                            {% else %}
+                            <tr class="month-{{current_month.0}}-day-{{row.0}} hidden">
+                                <td>{{row.0}}</td>
+                                <td>{{slot.0.start|time:'H:i'}}</td>
+                                <td>{{slot.0.end|time:'H:i'}}</td>
+                                <td onclick="book({{row.0}}, {{current_month.0}}, {{slot.0.id}})">Book</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}        
+        </table>
+
+    </div>    
+
+    <div id="bookingModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Some text in the Modal..</p>
+        </div>
+    </div>
+</main>
+
+
+<script>
+    let currently_revealed = null;
+    function revealSlots(revealTarget){
+        $("."+currently_revealed).addClass("hidden");
+        $("."+revealTarget).removeClass("hidden");
+        currently_revealed = revealTarget;
+    }
+
+    function book(day, month, slotId){
+        modal.style.display = "block";
+    }
+
+    // Modal Code
+
+    var modal = document.getElementById("bookingModal");
+
+
+    var span = document.getElementsByClassName("close")[0];
+
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    } 
+</script>
+{% endblock %}
+

@@ -560,8 +560,7 @@ class view_times(LoginRequiredMixin, View):
         return render(request, 'booking/book/view_times.html', 
         {
             'current_month': x,
-            'next_month': y,
-            'timeslots': times
+            'next_month': y
         })
 
     def post():
