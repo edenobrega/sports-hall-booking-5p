@@ -2,7 +2,11 @@
 {% load static %}
 
 {% block content %}
-{% csrf_token %}
+<script
+src="https://code.jquery.com/jquery-3.6.0.min.js"
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+crossorigin="anonymous"></script>
+
 <link rel="stylesheet" type="text/css" href="{% static 'css/list_tags.css' %}">
 <main>
     <table>
@@ -11,7 +15,7 @@
             <th>First</th>
             <th>Second</th>
             <th>Edit</th>
-            <th></th>
+            <th>Delete</th>
         </tr>
 
     {% for tag in fac_tags %}
@@ -20,7 +24,7 @@
             <td>{{tag.shorthand}}</td>
             <td>{{tag.description}}</td>
             <td><a href="{{tag.id}}">Edit</a></td>
-            <td><a href="">Delete</a></td>
+            <td><a onclick="deleteTag({{tag.id}})" href="#">Delete</a></td>
         </tr>
     {% endfor %}
     </table>
@@ -28,6 +32,22 @@
     <div class="create-parent">
         <a href="create">Create New</a>        
     </div>
-</main>
 
+    <form>
+{% csrf_token %}
+    </form>
+</main>
+<script>
+    function deleteTag(tagId){
+        $.ajax({
+            type: "POST",
+            url: "/tags/",
+            data:{ Data:tagId },
+            headers:{
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            complete: window.location.replace("/")
+        }); 
+    }
+</script>
 {% endblock %}

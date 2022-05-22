@@ -15,7 +15,6 @@ from django.utils.dateparse import parse_datetime
 from geopy.geocoders import Nominatim
 import math
 import calendar
-# Create your views here.
 
 
 #region helpers
@@ -66,6 +65,7 @@ def get_distance(lat1, lon1, lat2, lon2):
 #endregion
 
 
+#region Account
 class index_view(View):
     def get(self, request):
         form = bkf.SearchForm()
@@ -115,7 +115,7 @@ class register_view(View):
             login(request, user)
             user_group = Group.objects.get(name='User')
             user_group.user_set.add(user)
-            return redirect(get_booking_index)
+            return redirect('get_booking_index')
         return render(request, 'booking/register.html', {'form': form})
 
 
@@ -130,24 +130,31 @@ class login_view(View):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect(get_booking_index)
+            return redirect('get_booking_index')
         else:
-            return redirect(get_booking_index)   
+            return redirect('get_booking_index')   
 
 
 def logout_view(request):
     logout(request)
-    return redirect(get_booking_index)
+    return redirect('get_booking_index')
+#endregion
 
 
 #region Tag
-@login_required
-def list_tags(request):
-    if check_if_super(request.user):
-        tags = bkm.Tag.objects.all().order_by('id')
-        return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags})
-    return redirect(get_booking_index)
+class list_tags(LoginRequiredMixin, View):
+    def get(self, request):
+        if check_if_super(request.user):
+            tags = bkm.Tag.objects.all().order_by('id')
+            return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags})
+        return redirect(get_booking_index)
 
+    def post(self, request):
+        print(request.POST['Data'])
+        if check_if_super(request.user):
+            data = bkm.Tag.objects.filter(id=request.POST['Data'])
+            data.delete()
+        return redirect('list_tags')
 
 class edit_tag(LoginRequiredMixin, View):
     def get(self, request, tag_id):
@@ -156,7 +163,7 @@ class edit_tag(LoginRequiredMixin, View):
             form = bkf.EditTagForm(instance=data)
             return render(request, 'booking/tag/modify_tag.html', {'form': form})
         messages.error(request, 'No Access')
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
     def post(self, request, tag_id):
         if check_if_super(request.user):
@@ -168,7 +175,7 @@ class edit_tag(LoginRequiredMixin, View):
                 data.save()
             return redirect(list_tags)
         messages.error(request, 'No Access')
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
 
 class create_tag(LoginRequiredMixin, View):
@@ -553,7 +560,7 @@ class view_times(LoginRequiredMixin, View):
         #     datetime.datetime.now().month + 1)
         y=None
         form = bkf.BookingForm()
-
+    
         return render(request, 'booking/book/view_times.html',
         {
             'current_month': x,
@@ -608,12 +615,27 @@ class view_times(LoginRequiredMixin, View):
                 
         return redirect('get_booking_index')
 
+
 class list_facility_bookings(LoginRequiredMixin, View):
     def get(self, request, facil_id):
         bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
         return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
-    def post(self, request, facil_id):
-        pass
+
+
+class list_bookings(LoginRequiredMixin, View):
+    def get(self, request, user_id=''):
+        data = None
+        if user_id != '':
+            if check_if_super(request.user) or check_group(request.user, "Admin"):
+                user = bkm.User.objects.filter(id=user_id)
+                if user.exists():
+                    data = bkm.Booking.objects.filter(user_id=user_id)
+                else:
+                    messages.error(request, "No matching user found")
+        if not data:
+            data = bkm.Booking.objects.filter(user_id=request.user.id)
+        print(data)
+        return render(request, 'booking/book/user_bookings.html', {'bookings': data})
 #endregion
 
