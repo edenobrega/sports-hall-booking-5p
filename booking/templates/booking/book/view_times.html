@@ -75,7 +75,11 @@ crossorigin="anonymous"></script>
         <!-- Modal content -->
         <div class="modal-content">
             <span class="close">&times;</span>
-            <p>Some text in the Modal..</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit">Make Booking</button>
+              </form>
         </div>
     </div>
 </main>
@@ -90,7 +94,12 @@ crossorigin="anonymous"></script>
     }
 
     function book(day, month, slotId){
+        console.log(day);
+        console.log(month);
+        console.log(slotId);
         modal.style.display = "block";
+        $("#id_timeslot").val(slotId);
+        $("#id_date").val(new Date().getFullYear()+"-"+month + "-" + day);
     }
 
     // Modal Code

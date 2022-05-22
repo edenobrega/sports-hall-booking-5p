@@ -93,15 +93,10 @@ class index_view(View):
                     print(v.name + " is in the radius")
                     valid.append(v)
             print(vals)
-            return render(request, 'booking/search_results.html', {"returned": valid})
+            return render(request, 'booking/facility/search_results.html', {"returned": valid})
 
         form = bkf.SearchForm()
         return render(request, 'booking/index.html', {'form': form})
-
-
-
-def get_map_test(request):
-    return render(request, 'map_test.html')
 
 
 class register_view(View):
@@ -204,7 +199,7 @@ def display_facility(request):
     if check_if_super(request.user) or check_group(request.user, "Admin"):
         facilities = bkm.Facility.objects.all()
         fac_tags = bkm.FacilityTag.objects.all()       
-  
+ 
     elif check_group(request.user, "Facility Owner"):
         facilities = bkm.Facility.objects.filter(admin=request.user.id)
         owned_facilities = [x.id for x in facilities]
@@ -553,18 +548,65 @@ class view_times(LoginRequiredMixin, View):
             datetime.datetime.now().year,
             datetime.datetime.now().month)
 
-        y = build_data(
-            datetime.datetime.now().year,
-            datetime.datetime.now().month + 1)
+        # y = build_data(
+        #     datetime.datetime.now().year,
+        #     datetime.datetime.now().month + 1)
+        y=None
+        form = bkf.BookingForm()
 
-        return render(request, 'booking/book/view_times.html', 
+        return render(request, 'booking/book/view_times.html',
         {
             'current_month': x,
-            'next_month': y
+            'next_month': y,
+            'form': form
         })
 
-    def post():
-        pass
+    def post(self, request, facil_id):
+        form = bkf.BookingForm(request.POST)
+        if form.is_valid():
+            valid = True
+            _facility = bkm.Facility.objects.get(id=facil_id)
+            _timeslot = bkm.TimeSlot.objects.get(id=form.cleaned_data['timeslot'])
+            _date = form.cleaned_data['date']
+
+            exists = bkm.Booking.objects.filter(facility_id=_facility, time_slot=_timeslot, date=_date)
+
+            if not exists.exists():
+                day_of_week = calendar.day_abbr[_date.weekday()]
+                if day_of_week == 'Mon':
+                    if not _timeslot.monday:
+                        valid = False
+                elif day_of_week == 'Tue':
+                    if not _timeslot.tuesday:
+                        valid = False
+                elif day_of_week == 'Wed':
+                    if not _timeslot.wednesday:
+                        valid = False
+                elif day_of_week == 'Thu':
+                    if not _timeslot.thursday:
+                        valid = False
+                elif day_of_week == 'Fri':
+                    if not _timeslot.friday:
+                        valid = False
+                elif day_of_week == 'Sat':
+                    if not _timeslot.saturday:
+                        valid = False
+                elif day_of_week == 'Sun':
+                    if not _timeslot.sunday:
+                        valid = False
+                else:
+                    valid = False
+                    print("somethings gone wonky")
+
+                if valid:
+                    data = bkm.Booking(
+                        facility_id=_facility,
+                        time_slot=_timeslot,
+                        user_id=request.user,
+                        date=_date)
+                    data.save()
+                
+        return redirect('get_booking_index')
 
 class list_facility_bookings(LoginRequiredMixin, View):
     def get(self, request, facil_id):
