@@ -156,6 +156,7 @@ class list_tags(LoginRequiredMixin, View):
             data.delete()
         return redirect('list_tags')
 
+
 class edit_tag(LoginRequiredMixin, View):
     def get(self, request, tag_id):
         if check_if_super(request.user):
@@ -201,27 +202,41 @@ class create_tag(LoginRequiredMixin, View):
 #region Facility
 
 # Have seperate if for each role
-@login_required
-def display_facility(request):
-    if check_if_super(request.user) or check_group(request.user, "Admin"):
-        facilities = bkm.Facility.objects.all()
-        fac_tags = bkm.FacilityTag.objects.all()       
- 
-    elif check_group(request.user, "Facility Owner"):
-        facilities = bkm.Facility.objects.filter(admin=request.user.id)
-        owned_facilities = [x.id for x in facilities]
-        fac_tags = bkm.FacilityTag.objects.filter(facility_id__in=owned_facilities) 
+class display_facility(LoginRequiredMixin, View):
+    def get(self, request):
+        if check_if_super(request.user) or check_group(request.user, "Admin"):
+            facilities = bkm.Facility.objects.all()
+            fac_tags = bkm.FacilityTag.objects.all()       
+    
+        elif check_group(request.user, "Facility Owner"):
+            facilities = bkm.Facility.objects.filter(admin=request.user.id)
+            owned_facilities = [x.id for x in facilities]
+            fac_tags = bkm.FacilityTag.objects.filter(facility_id__in=owned_facilities) 
 
-    else:
-        messages.error(request, 'No Access')
-        return redirect(get_booking_index)
+        else:
+            messages.error(request, 'No Access')
+            return redirect(get_booking_index)
 
-    data = []
+        data = []
 
-    for f in facilities:
-        data.append((f, fac_tags.filter(facility_id=f.id)))
+        for f in facilities:
+            data.append((f, fac_tags.filter(facility_id=f.id)))
 
-    return render(request, 'booking/facility/list_facility.html', {'data': data})
+        return render(request, 'booking/facility/list_facility.html', {'data': data})        
+
+    def post(self, request):
+        if check_if_super(request.user) or check_group(request.user, "Admin"):
+            data = bkm.Facility.objects.filter(id=request.POST["Data"])
+            data.delete()
+    
+        elif check_group(request.user, "Facility Owner"):
+            data = bkm.Facility.objects.filter(admin=request.user.id, id=request.POST["Data"])
+            data.delete()
+
+        else:
+            messages.error(request, 'No Access')
+            return redirect(get_booking_index)
+        return redirect('display_facilities')  
 
 
 class create_facility(LoginRequiredMixin, View):

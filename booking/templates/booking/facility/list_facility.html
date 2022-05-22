@@ -2,7 +2,13 @@
 {% load static %}
 
 {% block content %}
+{% csrf_token %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/list_facility.css' %}">
+<script
+src="https://code.jquery.com/jquery-3.6.0.min.js"
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+crossorigin="anonymous"></script>
+
 <main>
     <table>
         <tr>
@@ -19,6 +25,7 @@
             <th>Modify Tags</th>
             <th>Modify Slots</th>
             <th>View Bookings</th>
+            <th>Delete Facility</th>
         </tr>
 
         {% for d in data %}
@@ -40,6 +47,7 @@
                 <td><a href="{% url 'modify_facility_tags' d.0.id %}">Modify</a></td>
                 <td><a href="{% url 'modify_slots' d.0.id %}">Modify</a></td>
                 <td><a href="{% url 'list_facility_bookings' d.0.id%}">View</a></td>
+                <td><a href="#" onclick="deleteFacility({{d.0.id}})">Delete</a></td>
             </tr>
         {% endfor %}
     </table>    
@@ -48,5 +56,17 @@
         <a href="create">Create New</a>        
     </div>
 </main>
-
+<script>
+    function deleteFacility(facilityId){
+        $.ajax({
+            type: "POST",
+            url: "/facility/",
+            data:{ Data:facilityId },
+            headers:{
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            complete: window.location.replace("/")
+        }); 
+    }
+</script>
 {% endblock %}

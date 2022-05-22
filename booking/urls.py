@@ -13,7 +13,8 @@ urlpatterns = [
         'facility/create',
         bkv.create_facility.as_view(),
         name='create_facility'),
-    path('facility/', bkv.display_facility, name='display_facilities'),
+    path('facility/', bkv.display_facility.as_view(), name='display_facilities'),
+
     path(
         'facility/tags/modify/<int:facil_id>',
         bkv.modify_facility_tags.as_view(),
@@ -46,7 +47,4 @@ urlpatterns = [
         bkv.list_bookings.as_view(),
         name='list_bookings'
     ),
-    # path(
-    #     'tags/delete/<int:tag_id>'
-    # ),
 ]
