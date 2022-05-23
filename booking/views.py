@@ -637,7 +637,7 @@ class list_facility_bookings(LoginRequiredMixin, View):
 
         return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
 
-
+# list_bookings
 class list_bookings(LoginRequiredMixin, View):
     def get(self, request, user_id=''):
         data = None
@@ -650,7 +650,25 @@ class list_bookings(LoginRequiredMixin, View):
                     messages.error(request, "No matching user found")
         if not data:
             data = bkm.Booking.objects.filter(user_id=request.user.id)
-        print(data)
+
         return render(request, 'booking/book/user_bookings.html', {'bookings': data})
+
+    def post(self, request, user_id=''):
+        if (check_if_super(request.user) or
+            check_group(request.user, "Admin")):
+            if user_id != '':
+                # Checking user_id is probably not needed, but might aswell
+                data = bkm.Booking.objects.filter(id=request.POST['Data'], user_id=user_id)
+                if data.exists():
+                    data.delete()
+            else:
+                data = bkm.Booking.objects.filter(id=request.POST['Data'])
+                if data.exists():
+                    data.delete()
+        else:
+            data = bkm.Booking.objects.filter(id=request.POST['Data'], user_id=request.user)
+            if data.exists():
+                data.delete()
+        return redirect('list_bookings')
 #endregion
 
