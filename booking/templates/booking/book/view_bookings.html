@@ -9,6 +9,7 @@
         <th>Booking ID</th>
         <th>Facility</th>
         <th>Time Slot User</th>
+        <th>User ID</th>
         <th>Date</th>
         <th>Start</th>
         <th>End</th>
@@ -20,6 +21,7 @@
     <td>{{ b.id }}</td>
     <td>{{ b.facility_id }}</td>
     <td>{{ b.user_id }}</td>
+    <td>{{ b.user_id.id }}</td>
     <td>{{ b.date}}</td>
     <td>{{ b.time_slot.start|time:'H:i' }}</td>
     <td>{{ b.time_slot.end|time:'H:i' }}</td>

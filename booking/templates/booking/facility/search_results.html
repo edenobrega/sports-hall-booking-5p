@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/search_results.css' %}">
+
+<main>
+{% for r in returned %}
+<div class="facility-square">
+    <div class="name-parent">
+        <span>{{r.name}}</span>
+    </div>
+
+    <div class="location-parent">
+        <span>{{r.postcode}}, {{r.address}}</span>
+    </div>
+
+    <div class="image-parent">
+        <a href="{% url 'make_booking' r.id %}">
+            <img src="{{r.image}}"/>            
+        </a>
+    </div>
+</div>
+<hr>
+{% endfor %}
+</main>
+
+<style>
+    .image-parent{
+        max-width: 150px;
+    }
+</style>
+{% endblock %}
