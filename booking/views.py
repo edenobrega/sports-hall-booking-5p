@@ -66,6 +66,7 @@ def get_distance(lat1, lon1, lat2, lon2):
 
 
 #region Account
+# get_booking_index
 class index_view(View):
     def get(self, request):
         form = bkf.SearchForm()
@@ -99,6 +100,7 @@ class index_view(View):
         return render(request, 'booking/index.html', {'form': form})
 
 
+# register
 class register_view(View):
 
     def get(self, request):
@@ -119,6 +121,7 @@ class register_view(View):
         return render(request, 'booking/register.html', {'form': form})
 
 
+# login_view
 class login_view(View):
     def get(self, request):
         return render(request, 'booking/login.html')
@@ -135,6 +138,7 @@ class login_view(View):
             return redirect('get_booking_index')   
 
 
+# logout_view
 def logout_view(request):
     logout(request)
     return redirect('get_booking_index')
@@ -142,6 +146,7 @@ def logout_view(request):
 
 
 #region Tag
+# list_tags
 class list_tags(LoginRequiredMixin, View):
     def get(self, request):
         if check_if_super(request.user):
@@ -157,6 +162,7 @@ class list_tags(LoginRequiredMixin, View):
         return redirect('list_tags')
 
 
+# edit_tag
 class edit_tag(LoginRequiredMixin, View):
     def get(self, request, tag_id):
         if check_if_super(request.user):
@@ -179,6 +185,7 @@ class edit_tag(LoginRequiredMixin, View):
         return redirect('get_booking_index')
 
 
+# create_tag
 class create_tag(LoginRequiredMixin, View):
     def get(self, request):
         if check_if_super(request.user):
@@ -200,8 +207,7 @@ class create_tag(LoginRequiredMixin, View):
 
 
 #region Facility
-
-# Have seperate if for each role
+# display_facilities
 class display_facility(LoginRequiredMixin, View):
     def get(self, request):
         if check_if_super(request.user) or check_group(request.user, "Admin"):
@@ -239,6 +245,7 @@ class display_facility(LoginRequiredMixin, View):
         return redirect('display_facilities')  
 
 
+# create_facility
 class create_facility(LoginRequiredMixin, View):
     def get(self, request):
         if check_if_super(request.user) or check_group(request.user, "Admin"):
@@ -288,6 +295,7 @@ class create_facility(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
 
+# modify_facility
 class modify_facility(LoginRequiredMixin, View):
     def get(self, request, facil_id):
         if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
@@ -323,6 +331,7 @@ class modify_facility(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
 
+# modify_slots
 class modify_timeslots(LoginRequiredMixin, View):
 
     def get(self, request, facil_id):
@@ -433,6 +442,7 @@ class modify_timeslots(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
 
+# modify_facility_tags
 class modify_facility_tags(LoginRequiredMixin, View):
 
     def get(self, request, facil_id):
@@ -477,6 +487,7 @@ class modify_facility_tags(LoginRequiredMixin, View):
 
 
 #region Booking
+# make_booking
 class view_times(LoginRequiredMixin, View):
     def get(self, request, facil_id):
         times = bkm.TimeSlot.objects.filter(facility_id=facil_id)
@@ -631,6 +642,7 @@ class view_times(LoginRequiredMixin, View):
         return redirect('get_booking_index')
 
 
+# list_facility_bookings
 class list_facility_bookings(LoginRequiredMixin, View):
     def get(self, request, facil_id):
         if (check_if_super(request.user) or 
@@ -641,6 +653,7 @@ class list_facility_bookings(LoginRequiredMixin, View):
 
             return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
         return redirect('get_booking_index')
+
 
 # list_bookings
 class list_bookings(LoginRequiredMixin, View):
@@ -676,4 +689,3 @@ class list_bookings(LoginRequiredMixin, View):
                 data.delete()
         return redirect('list_bookings')
 #endregion
-
