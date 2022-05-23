@@ -633,9 +633,14 @@ class view_times(LoginRequiredMixin, View):
 
 class list_facility_bookings(LoginRequiredMixin, View):
     def get(self, request, facil_id):
-        bookings = bkm.Booking.objects.filter(facility_id=facil_id)
+        if (check_if_super(request.user) or 
+            check_group(request.user, "Admin") or 
+            check_if_owned(request.user, facil_id)):
 
-        return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
+            bookings = bkm.Booking.objects.filter(facility_id=facil_id)
+
+            return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
+        return redirect('get_booking_index')
 
 # list_bookings
 class list_bookings(LoginRequiredMixin, View):
