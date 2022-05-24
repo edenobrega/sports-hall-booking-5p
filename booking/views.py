@@ -115,7 +115,9 @@ class register_view(View):
             login(request, user)
             user_group = Group.objects.get(name='User')
             user_group.user_set.add(user)
-
+	        if form.cleaned_data['facility_owner']:
+                user_group = Group.objects.get(name='Facility Owner')
+                user_group.user_set.add(user)
             return redirect('get_booking_index')
         return render(request, 'booking/register.html', {'form': form})
 
