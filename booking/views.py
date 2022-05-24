@@ -91,9 +91,7 @@ class index_view(View):
             valid = []
             for v in vals:
                 if get_distance(loc[1], loc[0], float(v.latitude), float(v.longitude)) <= radius:
-                    print(v.name + " is in the radius")
                     valid.append(v)
-            print(vals)
             return render(request, 'booking/facility/search_results.html', {"returned": valid})
 
         form = bkf.SearchForm()
@@ -117,6 +115,7 @@ class register_view(View):
             login(request, user)
             user_group = Group.objects.get(name='User')
             user_group.user_set.add(user)
+
             return redirect('get_booking_index')
         return render(request, 'booking/register.html', {'form': form})
 
@@ -155,7 +154,6 @@ class list_tags(LoginRequiredMixin, View):
         return redirect(get_booking_index)
 
     def post(self, request):
-        print(request.POST['Data'])
         if check_if_super(request.user):
             data = bkm.Tag.objects.filter(id=request.POST['Data'])
             data.delete()
@@ -248,17 +246,15 @@ class display_facility(LoginRequiredMixin, View):
 # create_facility
 class create_facility(LoginRequiredMixin, View):
     def get(self, request):
-        if check_if_super(request.user) or check_group(request.user, "Admin"):
+        if check_if_super(request.user) or check_group(request.user, "Admin") or check_group(request.user, "Facility Owner"):
             form = bkf.FacilityForm()
             return render(request, 'booking/facility/add_facility.html', {'form': form})
         messages.error(request, 'No Access')
         return redirect(get_booking_index)
 
     def post(self, request):
-        print("hehe")
-        if check_if_super(request.user) or check_group(request.user, "Admin"):
+        if check_if_super(request.user) or check_group(request.user, "Admin") or check_group(request.user, "Facility Owner"):
             form = bkf.FacilityForm(request.POST)
-            print(form.is_valid())
             if form.is_valid():
                 geo = Nominatim(user_agent="bookit_app")
                 loc = geo.geocode(query={
@@ -278,7 +274,7 @@ class create_facility(LoginRequiredMixin, View):
                     lat = loc.latitude
 
                 data = bkm.Facility(
-                    admin=User.objects.get(id=request.user.id),
+                    admin=form.cleaned_data['admin'],
                     name=form.cleaned_data['name'],
                     postcode=form.cleaned_data['postcode'],
                     address=form.cleaned_data['address'],
@@ -290,15 +286,15 @@ class create_facility(LoginRequiredMixin, View):
                     image=cloudinary.uploader.upload(request.FILES['image'])['url']
                 )
                 data.save()
-            return redirect(display_facility)
+            return redirect('display_facilities')
         messages.error(request, 'No Access')
-        return redirect(get_booking_index)
+        return redirect('display_facilities')
 
 
 # modify_facility
 class modify_facility(LoginRequiredMixin, View):
     def get(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
+        if (check_if_owned(request.user, facil_id) or
                 request.user.is_superuser or
                 check_group(request.user, "Admin")):
 
@@ -309,7 +305,7 @@ class modify_facility(LoginRequiredMixin, View):
         return render(request, 'booking/facility/add_facility.html', {'form': form})
 
     def post(self, request, facil_id):
-        if (bkm.Facility.objects.filter(id=facil_id, admin=request.user.id) or
+        if (check_if_owned(request.user, facil_id) or
             request.user.is_superuser or check_group(request.user, "Admin")):
 
             form = bkf.FacilityForm(request.POST)
@@ -629,7 +625,6 @@ class view_times(LoginRequiredMixin, View):
                         valid = False
                 else:
                     valid = False
-                    print("somethings gone wonky")
 
                 if valid:
                     data = bkm.Booking(

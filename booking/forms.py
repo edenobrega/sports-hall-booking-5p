@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 import booking.models as bkm
+from django.db.models import Q
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required. Please enter your First name.')
@@ -21,11 +22,12 @@ class EditTagForm(forms.ModelForm):
 
 
 class FacilityForm(forms.ModelForm):
+    admin = forms.ModelChoiceField(queryset=bkm.User.objects.filter(Q(groups__name="Facility Owner") | Q(groups__name="Admin")))
     class Meta:
         model = bkm.Facility
         fields = '__all__'
-        widgets = {'admin': forms.HiddenInput(), 'longitude': forms.HiddenInput(), 'latitude': forms.HiddenInput()}
-        exclude = ('admin', 'longitude', 'latitude',)
+        widgets = {'longitude': forms.HiddenInput(), 'latitude': forms.HiddenInput()}
+        exclude = ('longitude', 'latitude',)
 
 
 class FacilityTagForm(forms.Form):
