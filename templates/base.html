@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load group_check %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,6 +29,11 @@
                     <a href="{% url 'list_bookings' %}" class="list-link">My Bookings</a>
                 </li>
 
+                {% if request.user|has_group:"Facility Owner" %}
+                    <li class="list-right">
+                        <a href="{% url 'display_facilities' %}" class="list-link">My Facilities</a>
+                    </li>
+                {% endif %}
                 <li class="list-right">
                     <a href="" class="list-link">Welcome {{request.user.username}}</a>
                 </li>
