@@ -9,6 +9,11 @@
 
     <title>bookit</title>
 
+    <script
+    src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"></script>
+
     <link rel="stylesheet"type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -17,25 +22,12 @@
     <nav>
         <ul class="header-list">
             <li class="logo-parent">
-                <a href="/" class="list-link">logo</a>
+                <a href="/" class="list-link">Bookit</a>
             </li>
 
             {% if user.is_authenticated %}
                 <li class="list-right">
-                    <a href="/logout" class="list-link">logout</a>
-                </li>
-
-                <li class="list-right">
-                    <a href="{% url 'list_bookings' %}" class="list-link">My Bookings</a>
-                </li>
-
-                {% if request.user|has_group:"Facility Owner" %}
-                    <li class="list-right">
-                        <a href="{% url 'display_facilities' %}" class="list-link">My Facilities</a>
-                    </li>
-                {% endif %}
-                <li class="list-right">
-                    <a href="" class="list-link">Welcome {{request.user.username}}</a>
+                    <a class="list-link" onclick="toggleMobileNav()"><span>&#8801;</span></a>
                 </li>
             {% else %}
                 <li class="list-right">
@@ -54,8 +46,45 @@
 <h1>{{message}}</h1>
 {% endfor %}
 {% endif %}
+
+<ul id="nav-list">
+    {% if user.is_authenticated %}
+        <li>
+            <a href="#" class="nav-link">Make A Booking</a>
+        </li>
+
+        <li>
+            <a href="{% url 'list_bookings' %}" class="nav-link">My Bookings</a>
+        </li>
+
+        {% if request.user|has_group:"Facility Owner" %}
+            <li>
+                <a href="{% url 'display_facilities' %}" class="nav-link">My Facilities</a>
+            </li>
+        {% endif %}
+
+        <li>
+            <a href="/logout" class="nav-link">Logout</a>
+        </li>
+    {% endif %}
+</ul>
+
 {% block content %}
 
 {% endblock content %}
 </body>
 </html>
+
+<script>
+    let showNav = false;
+    function toggleMobileNav(){
+        showNav = !showNav;
+        if(showNav){
+            $("#nav-list").css({"display":"inline","visibility":"visible"});
+        }
+        else{
+            $("#nav-list").css({"display":"none","visibility":"hidden"});        
+        }
+
+    }
+</script>
