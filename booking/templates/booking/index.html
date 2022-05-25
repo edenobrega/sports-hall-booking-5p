@@ -7,27 +7,46 @@
 <main>
     <div class="middle-splash">
         <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
+            {% csrf_token %}            
+            <div class="form-child">
+                <p>Sports Booking Made Simple</p>
 
-            {{ form.source.errors }}
-            {{ form.source }}
+                <div>
+                    {{ form.non_field_errors }}
 
-            {{ form.sports_tag }}
-            {{ form.location }}
-            {{ form.distance }}
+                    {{ form.source.errors }}
+                    {{ form.source }}
 
-            <button type="submit">Save Changes</button>
+                    {{ form.sports_tag }}
+                    {{ form.location }}
+                    {{ form.distance }}      
+                    <button id="search-button" type="submit">Search 🔍︎</button>                              
+                </div>
+            </div>
         </form>
     </div>
 
-    <div class="about">
-        <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis gravida mi. Morbi volutpat sem sit amet dolor mattis, vel cursus risus convallis. Ut finibus orci et urna suscipit gravida. Proin eu risus ut urna rhoncus fringilla. Duis a odio aliquam, accumsan neque at, mollis magna. In porttitor ut odio in commodo. Morbi at fermentum lorem. </p> -->
-        <ul class="list">
-            <li><a href="{% url 'list_tags' %}">View Tags</a></li>
-            <li><a href="/facility">View Facilities</a></li>
-        </ul>
+    <div id="bottom">
+        <div id="bottom-make">
+            <img src="https://res.cloudinary.com/dcjvfcg2q/image/upload/v1653432751/arena-gc46fd1bd5_1920_zivpdv.jpg" />
+            <button id="button-make">Make Booking</button>
+        </div>
+
+        <div id="bottom-explore">
+            <img src="https://res.cloudinary.com/dcjvfcg2q/image/upload/v1653432708/olympic-swimming-pool-gd489f4c4a_1920_w0j8hi.jpg" />
+            <button id="button-explore">Explore Facilities</button>
+        </div>
+    </div>
+
+    <div id="very-bottom">
+        <div class="container">
+            {% for tag in tags %}
+            <div>
+                <div class="tag-img"><p class="description">{{tag.description}}</p></div>
+                <span class="name">{{tag.shorthand}}</span>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </main>
-
 {% endblock %}

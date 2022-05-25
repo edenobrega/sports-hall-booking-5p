@@ -70,7 +70,8 @@ def get_distance(lat1, lon1, lat2, lon2):
 class index_view(View):
     def get(self, request):
         form = bkf.SearchForm()
-        return render(request, 'booking/index.html', {'form': form})
+        tags = bkm.Tag.objects.all()
+        return render(request, 'booking/index.html', {'form': form, 'tags': tags, 'rows': round(len(tags)/3)})
 
     def post(self, request):
         form = bkf.SearchForm(request.POST)
@@ -115,7 +116,7 @@ class register_view(View):
             login(request, user)
             user_group = Group.objects.get(name='User')
             user_group.user_set.add(user)
-	        if form.cleaned_data['facility_owner']:
+            if form.cleaned_data['facility_owner']:
                 user_group = Group.objects.get(name='Facility Owner')
                 user_group.user_set.add(user)
             return redirect('get_booking_index')
@@ -153,13 +154,13 @@ class list_tags(LoginRequiredMixin, View):
         if check_if_super(request.user):
             tags = bkm.Tag.objects.all().order_by('id')
             return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags})
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
     def post(self, request):
         if check_if_super(request.user):
             data = bkm.Tag.objects.filter(id=request.POST['Data'])
             data.delete()
-        return redirect('list_tags')
+        return redirect('get_booking_index')
 
 
 # edit_tag
@@ -180,7 +181,7 @@ class edit_tag(LoginRequiredMixin, View):
                 data.shorthand = form.cleaned_data['shorthand']
                 data.description = form.cleaned_data['description']
                 data.save()
-            return redirect(list_tags)
+            return redirect('list_tags')
         messages.error(request, 'No Access')
         return redirect('get_booking_index')
 
@@ -198,7 +199,9 @@ class create_tag(LoginRequiredMixin, View):
         if check_if_super(request.user):
             form = bkf.EditTagForm(request.POST)
             if form.is_valid():
-                data = bkm.Tag(shorthand=form.cleaned_data['shorthand'], description=form.cleaned_data['description'])
+                data = bkm.Tag(
+                    shorthand=form.cleaned_data['shorthand'], 
+                    description=form.cleaned_data['description'])
                 data.save()
             return redirect(list_tags)
         messages.error(request, 'No Access')

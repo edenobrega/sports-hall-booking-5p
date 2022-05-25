@@ -10,16 +10,10 @@ html, body{
     background-color: white;
 }
 
-main{
-    margin-top:10px;
-}
-
 header{
-    margin-top:10px;
     height:50px;
-    margin-left: 25px;
-    margin-right: 25px;
-    border: 1px solid blue;
+    margin-right: 50px;
+    margin-left: 50px;
 }
 
 .header-list{
