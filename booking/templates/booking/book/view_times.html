@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load month_name %}
 {% block content%}
 <link rel="stylesheet" type="text/css" href="/static/css/calender.css">
 <script
@@ -9,42 +10,76 @@ crossorigin="anonymous"></script>
 
 <main>
     <div id="calendar">
-        <table>
-            <tr>
-                <th>Mon</th>
-                <th>Tue</th>
-                <th>Wed</th>
-                <th>Thu</th>
-                <th>Fri</th>
-                <th>Sat</th>
-                <th>Sun</th>
-            </tr>
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th id="current-month-header" class="month" colspan="7">{{current_month.0|month_name}}</th>
+                </tr>
 
-            {% for cm in current_month|slice:"1:" %}
-            <tr>
-                {% for row in cm %}
-                    {% if row.0 == 0 %}
-                        <td></td>
-                    {% elif row.2|length == 0%}
-                        <td class="">{{row.0}}</td>
-                    {% else %}
-                        <td class="calendar-clickable" onclick="revealSlots('month-{{current_month.0}}-day-{{row.0}}')">{{row.0}}</td>
-                    {% endif %}
-                    
-                {% endfor %}            
-            </tr>    
-            {% endfor %}
+                <tr>
+                    <th id="next-month-header" class="month hidden" colspan="7">{{next_month.0|month_name}}</th>
+                </tr>   
+
+                <tr>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                    <th>Sun</th>
+                </tr>                
+            </thead>
+
+            <tbody id="current-month-container">
+                {% for cm in current_month|slice:"1:" %}
+                <tr>
+                    {% for row in cm %}
+                        {% if row.0 == 0 %}
+                            <td></td>
+                        {% elif row.2|length == 0%}
+                            <td class="">{{row.0}}</td>
+                        {% else %}
+                            <td class="calendar-clickable" onclick="revealSlots('month-{{current_month.0}}-day-{{row.0}}')">{{row.0}}</td>
+                        {% endif %}
+                        
+                    {% endfor %}            
+                </tr>    
+                {% endfor %}
+            </tbody>
+
+            <tbody id="next-month-container" class="hidden">
+                {% for nm in next_month|slice:"1:" %}
+                <tr>
+                    {% for row in nm %}
+                        {% if row.0 == 0 %}
+                            <td></td>
+                        {% elif row.2|length == 0%}
+                            <td class="">{{row.0}}</td>
+                        {% else %}
+                            <td class="calendar-clickable" onclick="revealSlots('month-{{current_month.0}}-day-{{row.0}}')">{{row.0}}</td>
+                        {% endif %}
+                        
+                    {% endfor %}            
+                </tr>    
+                {% endfor %}
+            </tbody>
+
         </table>
+        <a class="btn btn-primary" onclick="swapCalendars()">See <span class="hidden">{{current_month.0|month_name}}</span><span>{{next_month.0|month_name}}</span></a>
     </div>
 
     <div id="slot-holder">
-        <table>
-            <tr>
-                <th>Day</th>
-                <th>Start</th>
-                <th>End</th>
-                <th></th>
-            </tr>
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Day</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th></th>
+                </tr>                
+            </thead>
+
             {% for cm in current_month|slice:"1:" %}
                 {% for row in cm %}
                     {% if row.0 != 0 and row.2|length != 0 %}
@@ -66,7 +101,30 @@ crossorigin="anonymous"></script>
                         {% endfor %}
                     {% endif %}
                 {% endfor %}
-            {% endfor %}        
+            {% endfor %}       
+            
+            {% for nm in next_month|slice:"1:" %}
+            {% for row in nm %}
+                {% if row.0 != 0 and row.2|length != 0 %}
+                    {% for slot in row.2 %}
+                        {% if slot.1 %}
+                        <tr class="month-{{current_month.0}}-day-{{row.0}} booked hidden">
+                            <td>{{row.0}}</td>
+                            <td>{{slot.0.start|time:'H:i'}}</td>
+                            <td>{{slot.0.end|time:'H:i'}}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="month-{{current_month.0}}-day-{{row.0}} hidden">
+                            <td>{{row.0}}</td>
+                            <td>{{slot.0.start|time:'H:i'}}</td>
+                            <td>{{slot.0.end|time:'H:i'}}</td>
+                            <td onclick="book({{row.0}}, {{current_month.0}}, {{slot.0.id}})">Book</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}  
         </table>
 
     </div>    
@@ -86,6 +144,7 @@ crossorigin="anonymous"></script>
 
 
 <script>
+    let current_month_revealed = null;
     let currently_revealed = null;
     function revealSlots(revealTarget){
         $("."+currently_revealed).addClass("hidden");
@@ -94,9 +153,6 @@ crossorigin="anonymous"></script>
     }
 
     function book(day, month, slotId){
-        console.log(day);
-        console.log(month);
-        console.log(slotId);
         modal.style.display = "block";
         $("#id_timeslot").val(slotId);
         $("#id_date").val(new Date().getFullYear()+"-"+month + "-" + day);

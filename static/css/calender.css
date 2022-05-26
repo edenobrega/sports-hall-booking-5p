@@ -28,7 +28,7 @@ td{
 }
 
 #slot-holder{
-    margin: 0 auto;
+    margin-left:10px;
 }
 
 .hidden {
@@ -73,6 +73,10 @@ td{
     text-decoration: none;
     cursor: pointer;
   } 
+
+.month{
+    text-align: center;
+}
 
 @media only screen and (min-width: 600px) {
     #slot-holder{

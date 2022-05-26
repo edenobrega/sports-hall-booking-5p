@@ -93,7 +93,8 @@ class index_view(View):
             for v in vals:
                 if get_distance(loc[1], loc[0], float(v.latitude), float(v.longitude)) <= radius:
                     valid.append(v)
-            return render(request, 'booking/facility/search_results.html', {"returned": valid})
+            form = bkf.SearchForm()
+            return render(request, 'booking/facility/search_results.html', {"returned": valid, "form":form})
 
         form = bkf.SearchForm()
         return render(request, 'booking/index.html', {'form': form})
@@ -582,10 +583,10 @@ class view_times(LoginRequiredMixin, View):
             datetime.datetime.now().year,
             datetime.datetime.now().month)
 
-        # y = build_data(
-        #     datetime.datetime.now().year,
-        #     datetime.datetime.now().month + 1)
-        y=None
+        y = build_data(
+            datetime.datetime.now().year,
+            datetime.datetime.now().month + 1)
+
         form = bkf.BookingForm()
     
         return render(request, 'booking/book/view_times.html',
