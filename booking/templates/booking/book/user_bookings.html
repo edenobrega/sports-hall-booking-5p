@@ -6,31 +6,31 @@
 src="https://code.jquery.com/jquery-3.6.0.min.js"
 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
 crossorigin="anonymous"></script>
-
-<table>
+<main>
+    <table class="table fifty-center">
+        <tr class="table-dark">
+            <th>Facility</th>
+            <th>Post Code</th>
+            <th>Address</th>
+            <th>Date</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Cancel</th>
+        </tr>
+    {% for b in bookings %}
     <tr>
-        <th>Facility</th>
-        <th>Post Code</th>
-        <th>Address</th>
-        <th>Time Slot User</th>
-        <th>Date</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Cancel</th>
+        <td>{{ b.facility_id }}</td>
+        <td>{{ b.facility_id.postcode }}</td>
+        <td>{{ b.facility_id.address }}</td>
+        <td>{{ b.date}}</td>
+        <td>{{ b.time_slot.start|time:'H:i' }}</td>
+        <td>{{ b.time_slot.end|time:'H:i' }}</td>
+        <td><a onclick="cancelBooking({{b.id}})" href="#" class="btn btn-danger">Cancel</a></td>
     </tr>
-{% for b in bookings %}
-<tr>
-    <td>{{ b.facility_id }}</td>
-    <td>{{ b.facility_id.postcode }}</td>
-    <td>{{ b.facility_id.address }}</td>
-    <td>{{ b.user_id }}</td>
-    <td>{{ b.date}}</td>
-    <td>{{ b.time_slot.start|time:'H:i' }}</td>
-    <td>{{ b.time_slot.end|time:'H:i' }}</td>
-    <td><a onclick="cancelBooking({{b.id}})" href="#">Cancel</a></td>
-</tr>
-{% endfor %}    
-</table>
+    {% endfor %}    
+    </table>    
+</main>
+
 
 <script>
     function cancelBooking(bookingId){
