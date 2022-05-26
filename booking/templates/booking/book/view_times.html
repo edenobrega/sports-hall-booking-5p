@@ -2,7 +2,8 @@
 {% load static %}
 {% load month_name %}
 {% block content%}
-<link rel="stylesheet" type="text/css" href="/static/css/calender.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/calender.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
 <script
 src="https://code.jquery.com/jquery-3.6.0.min.js"
 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
@@ -136,6 +137,7 @@ crossorigin="anonymous"></script>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form }}
+                <p>Are you sure you want to make this booking?</p>
                 <button type="submit">Make Booking</button>
               </form>
         </div>

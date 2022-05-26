@@ -51,4 +51,4 @@ class SearchForm(forms.Form):
 
 class BookingForm(forms.Form):
     timeslot = forms.IntegerField(widget=forms.HiddenInput())
-    date = forms.DateField()
+    date = forms.DateField(widget=forms.HiddenInput())

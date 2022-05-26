@@ -11,7 +11,7 @@ h2{
 }
 
 .sports-container{
-    width:50%;
+    width:90%;
 }
 
 .top-card-index{
@@ -24,7 +24,7 @@ h2{
 }
 
 @media only screen and (min-width: 992px) {
-    .search-form{
+    .sports-container{
         width:50%;
     }
 }
