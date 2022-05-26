@@ -8,7 +8,7 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Required. Please enter your First name.')
     last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     email = forms.EmailField(max_length=254, help_text='Required. Please enter a valid email address.')
-    facility_owner = forms.BooleanField()
+    facility_owner = forms.BooleanField(help_text="Tick if you plan on posting your own facilities")
     
     class Meta:
         model = User
