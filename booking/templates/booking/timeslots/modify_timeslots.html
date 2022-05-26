@@ -11,20 +11,23 @@ crossorigin="anonymous"></script>
 
 <main>
     <h2 class="hide header">Start time must be before the End time</h2>
-    <table id="slot-table">
-        <tr>
-            <th>id</th>
-            <th>start</th>
-            <th>end</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-            <th>Saturday</th>
-            <th>Sunday</th>
-            <th>Remove</th>
-        </tr>
+    <table id="slot-table" class="table fifty-center">
+        <thead class="table-dark">
+            <tr>
+                <th>id</th>
+                <th>start</th>
+                <th>end</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+                <th>Sunday</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+
     
         {% for slot in data %}
             <tr id="slot-{{slot.id}}">
@@ -38,13 +41,13 @@ crossorigin="anonymous"></script>
                 <td><input type="checkbox" {% if slot.friday %} checked {% endif %} /></td>
                 <td><input type="checkbox" {% if slot.saturday %} checked {% endif %} /></td>
                 <td><input type="checkbox" {% if slot.sunday %} checked {% endif %} /></td>
-                <td><button onclick="removeTimeSlot('slot-{{slot.id}}')">Remove</button></td>
+                <td><button onclick="removeTimeSlot('slot-{{slot.id}}')" class="btn btn-danger">Remove</button></td>
             </tr>
         {% endfor %}
     </table>
-
-    <button onclick="addTimeSlot()">Add New</button>
-    <button onclick="submit()">Save</button>
+    <hr>
+    <button onclick="addTimeSlot()" class="btn btn-success">Add New</button>
+    <button onclick="submit()" class="btn btn-success">Save</button>
 </main>
 
 <script>

@@ -7,33 +7,39 @@
 src="https://code.jquery.com/jquery-3.6.0.min.js"
 integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
 crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/modify_facility_tags.css' %}">
+<main>
+    <table id="facility-table" class="table fifty-center">
+        <thead class="table-dark">
+            <tr>
+                <th>Facility ID</th>
+                <th>Tag ID</th>
+                <th>Remove</th>
+            </tr>        
+        </thead>
 
-<table id="facility-table">
-    <thead>
-        <tr>
-            <th>Facility ID</th>
-            <th>Tag ID</th>
-            <th>Remove</th>
-        </tr>        
-    </thead>
+        {% for facil_tag in data %}
+            <tr id="row-{{facil_tag.id}}">
+                <td>{{facil_tag.facility_id}}</td>
+                <td id="{{facil_tag.tag_id.id}}">{{facil_tag.tag_id}}</td>
+                <td><button class="btn btn-danger" onclick="removeTag('row-{{facil_tag.id}}')">Remove</button></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <div class="fifty-center">
+        <select id="tag-select" class="form-select">
+            {% for tag in tags %}
+                <option value="{{tag.id}}">{{tag.shorthand}}</option>
+            {% endfor %}
+        </select>
 
-    {% for facil_tag in data %}
-        <tr id="row-{{facil_tag.id}}">
-            <td>{{facil_tag.facility_id}}</td>
-            <td id="{{facil_tag.tag_id.id}}">{{facil_tag.tag_id}}</td>
-            <td><button class="remove" onclick="removeTag('row-{{facil_tag.id}}')">Remove</button></td>
-        </tr>
-    {% endfor %}
-</table>
+        <button id="add" onclick="addTag()" class="btn btn-success">Add Tag</button>
+        <button onclick="submit()" class="btn btn-success">Submit Changes</button>
+    </div>    
+</main>
 
-<select id="tag-select">
-    {% for tag in tags %}
-        <option value="{{tag.id}}">{{tag.shorthand}}</option>
-    {% endfor %}
-</select>
 
-<button id="add" onclick="addTag()">Add Tag</button>
-<button onclick="submit()">Submit Changes</button>
 
 <script>
     let name = "{{info_tup.1}}";
@@ -68,7 +74,7 @@ crossorigin="anonymous"></script>
             ['<tr class="add" id="new-'+num+'">',
               '<td>', name , '</td>',
               '<td id="' + $('#tag-select').val()+ '">', $("#tag-select option:selected").text() ,'</td>',
-              '<td><button class="remove" onclick="removeTag(', "'new-"+num+ "')" +'"' + ">Remove</button></td>" ,
+              '<td><button class="btn btn-danger" onclick="removeTag(', "'new-"+num+ "')" +'"' + ">Remove</button></td>" ,
               '</tr>'].join(' ')
         );
         num = num + 1;

@@ -2,10 +2,6 @@ main{
     text-align: center;
 }
 
-table{
-    margin: auto;
-}
-
 .hide{
     visibility: hidden;
     display:none;

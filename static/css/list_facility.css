@@ -1,11 +1,14 @@
+img{
+    max-width: 300px;
+}
+
 .create-parent{
     width:fit-content;
     margin: 0 auto;
 }
 
-table{
-    width:75%;
-    margin: 0 auto;
+th{
+    text-align: center;
 }
 
 tr{
@@ -16,8 +19,3 @@ img{
     max-width: 250px;
 }
 
-@media only screen and (min-width: 992px) {
-    table{
-        width:25%;
-    }
-}

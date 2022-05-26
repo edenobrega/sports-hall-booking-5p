@@ -10,13 +10,13 @@ crossorigin="anonymous"></script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/list_tags.css' %}">
 <main>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>First</th>
-            <th>Second</th>
-            <th>Edit</th>
-            <th>Delete</th>
+    <table class="table fifty-center">
+        <tr class="table-dark">
+            <th scope="col">ID</th>
+            <th scope="col">First</th>
+            <th scope="col">Second</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
         </tr>
 
     {% for tag in fac_tags %}
@@ -24,8 +24,8 @@ crossorigin="anonymous"></script>
             <td>{{tag.id}}</td>
             <td>{{tag.shorthand}}</td>
             <td>{{tag.description}}</td>
-            <td><a href="{{tag.id}}">Edit</a></td>
-            <td><a onclick="deleteTag({{tag.id}})" href="#">Delete</a></td>
+            <td><a href="{{tag.id}}" class="btn btn-success">Edit</a></td>
+            <td><a onclick="deleteTag({{tag.id}})" href="#" class="btn btn-danger">Delete</a></td>
         </tr>
     {% endfor %}
     </table>
