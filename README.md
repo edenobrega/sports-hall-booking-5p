@@ -60,22 +60,57 @@ Modify Facility Tags
 ## Features
 ### Existing Features
 - Nav bar leading to differnt pages
-
+![](documentation/screenshots/header.png)
 - Search form on index
-
-- Two links on index
-    - "Make a booking" leading to the results page with a form
-    - "Explore Facilities" leading to a page listing all facilities
 
 - A list of sports offered
     - Taken from the "Tag" table and updates live to reflect the table
+    - (Take again without placeholders)
+    ![](documentation/screenshots/sports_cards.png)
 
 - Clickable calendar to visually choose what date you want
     - Reveals a table of times available on that date
     - Booked times will still be shown by greyed out
+    ![](documentation/screenshots/booking_page.png)
 
 - Page to see all of your bookings
     - With the functionality to cancel it
+    ![](documentation/screenshots/my_bookings.png)
+
+- Form to search for facilities
+    - Takes a tag via drop down
+    - A location (preferably a town)
+    - A distance in miles
+    ![](documentation/screenshots/search_form.png)
+
+- A Search results page that lists relevant facilities and has a form to make another search
+    - Each card will have the facility image and its location
+    ![](documentation/screenshots/search_results.png)
+
+#### Admin Features
+- See all the facilities you are in charge of
+    - Or if site Admin see all facilities
+    ![](documentation/screenshots/admin_facilities.png)
+
+- Edit the tags of a facility
+    ![](documentation/screenshots/admin_facility_tags.png)
+
+- Edit, Add, Remove sports to tag facilities with (Site admins only)
+    ![](documentation/screenshots/admin_tags.png)
+
+- Edit, Add and Remove timeslots from facilities
+    ![](documentation/screenshots/admin_timeslots.png)
+
+
+
+
+
+
+
+
+
+
+
 
 ### Features left to implent
 - Use googles geocode api as its more precise (currently it is paid for)
