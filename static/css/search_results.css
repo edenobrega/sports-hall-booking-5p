@@ -1,0 +1,13 @@
+main{
+    padding-top:25px;
+}
+
+img{
+    max-width: 300px;
+    max-height: 300px;
+}
+
+#results-parent{
+    margin-left: 50px;
+    margin-right: 50px;
+}
