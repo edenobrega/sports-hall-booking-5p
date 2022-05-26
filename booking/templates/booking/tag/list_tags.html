@@ -13,8 +13,9 @@ crossorigin="anonymous"></script>
     <table class="table fifty-center">
         <tr class="table-dark">
             <th scope="col">ID</th>
-            <th scope="col">First</th>
-            <th scope="col">Second</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Image</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
         </tr>
@@ -24,6 +25,7 @@ crossorigin="anonymous"></script>
             <td>{{tag.id}}</td>
             <td>{{tag.shorthand}}</td>
             <td>{{tag.description}}</td>
+            <td><img src="{{tag.image}}"></td>
             <td><a href="{{tag.id}}" class="btn btn-success">Edit</a></td>
             <td><a onclick="deleteTag({{tag.id}})" href="#" class="btn btn-danger">Delete</a></td>
         </tr>
@@ -31,7 +33,7 @@ crossorigin="anonymous"></script>
     </table>
 
     <div class="create-parent">
-        <a href="create">Create New</a>        
+        <a href="create" class="btn btn-success">Create New</a>        
     </div>
 
 </main>

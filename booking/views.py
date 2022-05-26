@@ -181,6 +181,11 @@ class edit_tag(LoginRequiredMixin, View):
                 data = bkm.Tag.objects.get(id=tag_id)
                 data.shorthand = form.cleaned_data['shorthand']
                 data.description = form.cleaned_data['description']
+                try:
+                    data.image = cloudinary.uploader.upload(request.FILES['image'])['url']
+                # No new image to upload
+                except MultiValueDictKeyError:
+                    pass   
                 data.save()
             return redirect('list_tags')
         messages.error(request, 'No Access')
@@ -201,8 +206,9 @@ class create_tag(LoginRequiredMixin, View):
             form = bkf.EditTagForm(request.POST)
             if form.is_valid():
                 data = bkm.Tag(
-                    shorthand=form.cleaned_data['shorthand'], 
-                    description=form.cleaned_data['description'])
+                    shorthand=form.cleaned_data['shorthand'],
+                    description=form.cleaned_data['description'],
+                    image=cloudinary.uploader.upload(request.FILES['image'])['url'])
                 data.save()
             return redirect(list_tags)
         messages.error(request, 'No Access')
