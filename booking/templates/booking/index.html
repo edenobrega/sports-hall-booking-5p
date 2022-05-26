@@ -30,7 +30,7 @@
             {% for tag in tags%}
             <div class="col">
                 <div class="card shadow-sm">
-                  <img class="bd-placeholder-img card-img-top" src="https://res.cloudinary.com/dcjvfcg2q/image/upload/v1653419840/volleyball-g3a963f1e1_1920_vwfrye.jpg" />
+                  <img class="bd-placeholder-img card-img-top sport-card-image" src="{{tag.image}}" />
                   <div class="card-body">
                     <h5 class="card-title">{{tag.shorthand}}</h5>
                     <p class="card-text">{{tag.description}}</p>

@@ -11,11 +11,16 @@ h2{
 }
 
 .sports-container{
-    width:80%;
+    width:50%;
 }
 
 .top-card-index{
     margin-bottom: 30px;;
+}
+
+.sport-card-image{
+    height:300px;
+    object-fit: cover;
 }
 
 @media only screen and (min-width: 992px) {
