@@ -7,58 +7,9 @@
 html, body{
     height:100%;
     width:100%;
-    background-color: white;
 }
 
-header{
-    height:50px;
-    margin-right: 50px;
-    margin-left: 50px;
-}
-
-.header-list{
-    height:50px;
-    list-style-type: none;
-    overflow: hidden;    
-}
-
-.logo-parent{
-    float: left;   
-}
-
-.list-link{
-    display: block;
-    color: black;
-    text-align: center;
-    padding: 16px;
-    text-decoration: none;    
-}
-
-.list-link:hover{
-    background-color: black;
-    color: white;    
-}
-
-.list-right{
-    float:right;
-    height:50px;
-}
-
-#nav-list{
-    display:none;
-    visibility:hidden;
-}
-
-.nav-link{
-    display: block;
-    color: white;
-    background-color: #44ad47;
-    text-align: center;
-    padding: 16px;
-    text-decoration: none;   
-}
-
-.nav-link:hover{
-    color:white;
-    background-color: #1d71b8;
+.fifty-center{
+    width:50%;
+    margin:0 auto;
 }

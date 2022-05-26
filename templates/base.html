@@ -13,61 +13,37 @@
     src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
     crossorigin="anonymous"></script>
+    
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 
     <link rel="stylesheet"type="text/css" href="{% static 'css/style.css' %}">
 </head>
-<body>
 
-<header>
-    <nav>
-        <ul class="header-list">
-            <li class="logo-parent">
-                <a href="/" class="list-link">Bookit</a>
-            </li>
-
-            {% if user.is_authenticated %}
-                <li class="list-right">
-                    <a class="list-link" onclick="toggleMobileNav()"><span>&#8801;</span></a>
-                </li>
-            {% else %}
-                <li class="list-right">
-                    <a href="/register" class="list-link">register</a>
-                </li>
-
-                <li class="list-right">
-                    <a href="/login" class="list-link">login</a>
-                </li>
-            {% endif %}
+<div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center py-3 mb-4 border-bottom">
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+        <li><a href="#" class="nav-link px-2 link-dark">Search</a></li>
+        <li><a href="{% url 'display_facilities' %}" class="nav-link px-2 link-dark">Facilities</a></li>  
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'list_bookings' %}" class="nav-link px-2 link-dark">Bookings</a></li>     
+        <li><a href="/logout" class="nav-link px-2 link-dark">Logout</a></li>
+        {% else %}
+        <li><a href="/login" class="nav-link px-2 link-dark">Login</a></li>
+        <li><a href="/register" class="nav-link px-2 link-dark">Register</a></li>
+        {% endif %}
         </ul>
-    </nav>
-</header>
+
+    </header>
+</div>
+
+<body>
 {% if messages %}
 {% for message in messages%}
 <h1>{{message}}</h1>
 {% endfor %}
 {% endif %}
-
-<ul id="nav-list">
-    {% if user.is_authenticated %}
-        <li>
-            <a href="#" class="nav-link">Make A Booking</a>
-        </li>
-
-        <li>
-            <a href="{% url 'list_bookings' %}" class="nav-link">My Bookings</a>
-        </li>
-
-        {% if request.user|has_group:"Facility Owner" %}
-            <li>
-                <a href="{% url 'display_facilities' %}" class="nav-link">My Facilities</a>
-            </li>
-        {% endif %}
-
-        <li>
-            <a href="/logout" class="nav-link">Logout</a>
-        </li>
-    {% endif %}
-</ul>
 
 {% block content %}
 
@@ -75,16 +51,3 @@
 </body>
 </html>
 
-<script>
-    let showNav = false;
-    function toggleMobileNav(){
-        showNav = !showNav;
-        if(showNav){
-            $("#nav-list").css({"display":"inline","visibility":"visible"});
-        }
-        else{
-            $("#nav-list").css({"display":"none","visibility":"hidden"});        
-        }
-
-    }
-</script>
