@@ -1,124 +1,25 @@
-.middle-splash{
-    background-image: url(https://res.cloudinary.com/dcjvfcg2q/image/upload/v1653419840/volleyball-g3a963f1e1_1920_vwfrye.jpg);
-    height:200px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    overflow: hidden;
+h2{
+    width:fit-content;
 }
 
-#bottom{
-    padding: 2rem 2rem;
-    text-align: center;
+.bk-center{
+    margin:0 auto;    
 }
 
-#bottom-explore, #bottom-make{
-    width:125px;
-    display: inline-block;
-    vertical-align: middle;
-    height:100px;
+.search-form{
+    width:90%;
 }
 
-#bottom-make{
-    margin-right:25px;
+.sports-container{
+    width:80%;
 }
 
-#bottom-make img, #bottom-explore img{
-    width:inherit;
-    height:inherit;
+.top-card-index{
+    margin-bottom: 30px;;
 }
 
-#bottom-make button, #bottom-explore button{
-    width:inherit;
-    color: white;
-    background-color: #44ad47;
-    padding: 5px;
-}
-
-
-.form-child{
-    width:275px;
-    height:75px;
-    margin:auto;
-    margin-top:90px;
-    padding:15px;
-    background-color: #1d71b8;
-
-    -webkit-box-shadow:0 0 5px #1d71b8; 
-    -moz-box-shadow: 0 0 5px #1d71b8; 
-    box-shadow:0 0 5px #1d71b8;
-}
-.form-child p{
-    color:white;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-#id_sports_tag{
-    color:black;
-    background-color: white;
-    -webkit-text-fill-color: #1d71b8;
-    width:100px;
-    height:25px;
-    box-shadow:0 0 5px #1d71b8;
-}
-
-#id_location{
-    height:25px;
-    width:100px;
-}
-
-#id_distance{
-    height:25px;
-    width:50px;
-    background-color: white;
-}
-
-#search-button{
-    background-color: white;
-    color:black;
-    height:25px;    
-    width:75px;
-    margin-top:5px;
-}
-
-#very-bottom{
-    padding-top: 25px;
-    padding-left: 15px;
-    padding-right: 15px;
-    text-align: center;
-}
-
-.tag-img{
-    height: 90%;
-    width: 100%;
-    background-image: url(https://res.cloudinary.com/dcjvfcg2q/image/upload/v1653419840/volleyball-g3a963f1e1_1920_vwfrye.jpg);
-    background-size:cover;
-    background-repeat: no-repeat;
-}
-
-.tag-img:hover{
-    background-image: none;
-}
-
-.tag-img:hover > .description{
-    visibility: visible;
-}
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 5px;
-}
-.container div {
-  aspect-ratio: 1;
-}
-
-.name{
-    height:10%;
-}
-
-.description{
-    font-size: 7px;
-    visibility: hidden;
+@media only screen and (min-width: 992px) {
+    .search-form{
+        width:50%;
+    }
 }
