@@ -38,13 +38,64 @@ Register
 Login
 
 Search
+![](documentation/index.png)
 
 Results
+![](documentation/search_results.png)
 
 Book
+![](documentation/time_slots.png)
 
 View Bookings
+![](documentation/list_bookings.png)
 
 View Facilities
 
-Create Facility
+Modify Timeslots
+![](documentation/modify_timeslots.png)
+
+Modify Facility Tags
+![](documentation/facility_tags.png)
+
+## Features
+### Existing Features
+- Nav bar leading to differnt pages
+
+- Search form on index
+
+- Two links on index
+    - "Make a booking" leading to the results page with a form
+    - "Explore Facilities" leading to a page listing all facilities
+
+- A list of sports offered
+    - Taken from the "Tag" table and updates live to reflect the table
+
+- Clickable calendar to visually choose what date you want
+    - Reveals a table of times available on that date
+    - Booked times will still be shown by greyed out
+
+- Page to see all of your bookings
+    - With the functionality to cancel it
+
+### Features left to implent
+- Use googles geocode api as its more precise (currently it is paid for)
+- Have a clickable map for facility owners to select where there facility it
+- Results page will have a form on it
+- Admins/Facility owners able to cancel bookings
+- Email updates to users when booked or cancelled
+- Upload related image to Tag to display it on front page
+- Show available days on results screen
+
+## Technologies used
+- I used [git](https://git-scm.com/) for version control and storage.
+- To help with using git, I used [github](https://github.com/).
+
+- I used [html](https://en.wikipedia.org/wiki/HTML) to design the site.
+- And [CSS](https://en.wikipedia.org/wiki/CSS) to style the site.
+- For most of the sites layout ive used [Bootstrap](https://getbootstrap.com/) and its many [examples](https://getbootstrap.com/docs/5.2/examples/) to help with quick development
+- Using [Django](https://www.djangoproject.com/) to create the backend to the site
+- For some of the forms like "facility/tags/modify/", and the calendar on the booking page I used [Javascript](https://en.wikipedia.org/wiki/JavaScript) and [JQuery](https://jquery.com/) to create the functionality
+- To help with styling I used a css debugger to help me with things like positioning and size: [link](https://github.com/benscabbia/x-ray).
+- For my IDE I used Gitpod, [link](https://www.gitpod.io/).
+- To host static files like images and css i used [Cloudinary](https://cloudinary.com/) and its django library "cloudinary"
+- To deploy the website I used [Heroku](https://dashboard.heroku.com/)
