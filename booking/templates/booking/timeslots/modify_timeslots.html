@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/modify_timeslots.css' %}">
+{% endblock %}
+
 {% block content %}
 {% csrf_token %}
-<script
-src="https://code.jquery.com/jquery-3.6.0.min.js"
-integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-crossorigin="anonymous"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'css/modify_timeslots.css' %}">
+
+
 
 <main>
     <h2 class="hide header">Start time must be before the End time</h2>
@@ -152,7 +153,7 @@ crossorigin="anonymous"></script>
             headers:{
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
-            complete: window.location.replace("/")
+            complete: window.location.replace("/facility/")
         });
     }
 </script>

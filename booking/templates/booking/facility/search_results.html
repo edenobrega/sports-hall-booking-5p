@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-
-{% block content %}
+{% block head %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/search_results.css' %}">
-<!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
+{% endblock %}
+{% block content %}
 <main>
 
 <div>
@@ -30,18 +28,18 @@
     <div id="results-parent" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         <!-- Inline styling to force width because of bootstrap -->
         {% for r in returned %}
+
         <div class="col" style="width:300px;">
             <div class="card shadow-sm">
                 <img class="bd-placeholder-img card-img-top" src="{{r.image}}" />
                 <div class="card-body">
-                <p class="card-text">{{r.name}}</p>
-                <p class="card-text">{{r.postcode}}, {{r.address}}</p>
-                <a href="{% url 'make_booking' r.id %}">View Times</a>
+                    <p class="card-text">{{r.name}}</p>
+                    <p class="card-text">{{r.postcode}}, {{r.address}}</p>
+                    <a href="{% url 'make_booking' r.id %}">View Times</a>
                 </div>
             </div>
-            </div>       
+        </div>
         {% endfor %}
-
     </div>
 </div>
 </main>

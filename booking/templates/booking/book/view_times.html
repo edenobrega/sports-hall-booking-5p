@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 {% load month_name %}
-{% block content%}
+
+{% block head %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/calender.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
-<script
-src="https://code.jquery.com/jquery-3.6.0.min.js"
-integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-crossorigin="anonymous"></script>
+
+{% endblock %}
+
+{% block content%}
+
 
 <main>
     <div id="calendar">
@@ -144,7 +146,7 @@ crossorigin="anonymous"></script>
     </div>
 </main>
 
-
+<script src="{% static 'js/modal.js' %}"></script>
 <script>
     let current_month_revealed = null;
     let currently_revealed = null;
@@ -159,24 +161,6 @@ crossorigin="anonymous"></script>
         $("#id_timeslot").val(slotId);
         $("#id_date").val(new Date().getFullYear()+"-"+month + "-" + day);
     }
-
-    // Modal Code
-
-    var modal = document.getElementById("bookingModal");
-
-
-    var span = document.getElementsByClassName("close")[0];
-
-
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    } 
 </script>
 {% endblock %}
 

@@ -170,7 +170,7 @@ class list_tags(LoginRequiredMixin, View):
             if check_if_super(request.user):
                 data = bkm.Tag.objects.filter(id=form.cleaned_data['ID'])
                 data.delete()
-                messages.success(request, "Successfully deleted tag")                
+                messages.success(request, "Successfully deleted tag")         
         else:
             messages.error(request, 'Something went wrong with the form')
 

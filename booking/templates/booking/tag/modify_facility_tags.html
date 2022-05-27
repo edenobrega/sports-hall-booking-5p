@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/modify_facility_tags.css' %}">
+{% endblock %}
+
 {% block content %}
 {% csrf_token %}
-<script
-src="https://code.jquery.com/jquery-3.6.0.min.js"
-integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-crossorigin="anonymous"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'css/modify_facility_tags.css' %}">
+
+
 <main>
     <table id="facility-table" class="table fifty-center">
         <thead class="table-dark">
@@ -61,7 +62,7 @@ crossorigin="anonymous"></script>
             headers:{
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
-            complete: window.location.replace("/")
+            complete: window.location.replace("/facility/")
         });
     }
 
