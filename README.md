@@ -100,6 +100,12 @@ Modify Facility Tags
 - Edit, Add and Remove timeslots from facilities
     ![](documentation/screenshots/admin_timeslots.png)
 
+## Features left to implent
+- Use googles geocode api as its more precise (currently it is paid for)
+- Have a clickable map for facility owners to select where there facility it
+- Admins/Facility owners able to cancel bookings
+- Email updates to users when booked or cancelled
+- Show available days on results screen
 
 # Deployment
 The app was deployed using heroku, to do so, the steps are as follows:
@@ -133,14 +139,27 @@ The app was deployed using heroku, to do so, the steps are as follows:
         3. ```heroku git:remote -a app-name``` "app-name" being what you named your heroku app
         4. ```git push heroku main:main```
 # Local Deployment
+In order to make a local copy of this project, you can clone it. In your IDE Terminal, type the following command to clone my repository:
+
+- `git clone https://github.com/edenobrega/sports-hall-booking-5p.git`
+
+Alternatively, if using Gitpod, you can click below to create your own workspace using this repository.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/edenobrega/sports-hall-booking-5p)
+
+1. Create a file in the root called `env.py`, insde of the file copy the following:
+    1. `import os`
+    2. `os.environ["APP_SECRET_KEY"] = ''`
+    3. `os.environ["DATABASE_URL"] = ''`
+    4. `os.environ["CLOUDINARY_URL"] = ''`
+    5. `os.environ["DEBUG"] = "True"`
+The following steps will all be done in your IDE Terminal
+1. pip3 install -r requirements.txt
+2. Eenter `python3 manage.py makemigrations`
+3. And then enter `python3 manage.py migrate`
+4. To run the site enter `python3 manage.py runserver`
 
 
-### Features left to implent
-- Use googles geocode api as its more precise (currently it is paid for)
-- Have a clickable map for facility owners to select where there facility it
-- Admins/Facility owners able to cancel bookings
-- Email updates to users when booked or cancelled
-- Show available days on results screen
 
 ## Technologies used
 - I used [git](https://git-scm.com/) for version control and storage.
