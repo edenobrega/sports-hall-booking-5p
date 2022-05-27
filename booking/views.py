@@ -524,9 +524,9 @@ class modify_facility_tags(LoginRequiredMixin, View):
                 fac = bkm.Facility.objects.get(id=facil_id)
                 new = bkm.FacilityTag(facility_id=fac, tag_id=tg)
                 new.save()
+
             messages.success(request, 'Facility Tags Successfully Updated')
             return redirect('display_facilities')
-
         return redirect('get_booking_index')
 #endregion
 
@@ -716,24 +716,26 @@ class list_bookings(LoginRequiredMixin, View):
             data = bkm.Booking.objects.filter(user_id=request.user.id)
         if not len(data):
             messages.error(request, 'No Bookings Found')
-        return render(request, 'booking/book/user_bookings.html', {'bookings': data})
+        return render(request, 'booking/book/user_bookings.html', {'bookings': data, 'form': bkf.SingleIdForm()})
 
     def post(self, request, user_id=''):
         if (check_if_super(request.user) or
             check_group(request.user, "Admin")):
-            if user_id != '':
-                # Checking user_id is probably not needed, but might aswell
-                data = bkm.Booking.objects.filter(id=request.POST['Data'], user_id=user_id)
-                if data.exists():
-                    data.delete()
-                    messages.success(request, 'Booking cancelled')
-            else:
-                data = bkm.Booking.objects.filter(id=request.POST['Data'])
-                if data.exists():
-                    data.delete()
-                    messages.success(request, 'Booking cancelled')
+            form = bkf.SingleIdForm(request.POST)
+            if form.is_valid():
+                if user_id != '':
+                    # Checking user_id is probably not needed, but might aswell
+                    data = bkm.Booking.objects.filter(id=form.cleaned_data['ID'], user_id=user_id)
+                    if data.exists():
+                        data.delete()
+                        messages.success(request, 'Booking cancelled')
+                else:
+                    data = bkm.Booking.objects.filter(id=form.cleaned_data['ID'])
+                    if data.exists():
+                        data.delete()
+                        messages.success(request, 'Booking cancelled')
         else:
-            data = bkm.Booking.objects.filter(id=request.POST['Data'], user_id=request.user)
+            data = bkm.Booking.objects.filter(id=form.cleaned_data['ID'], user_id=request.user)
             if data.exists():
                 data.delete()
                 messages.success(request, 'Booking cancelled')

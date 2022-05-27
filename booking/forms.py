@@ -23,12 +23,11 @@ class EditTagForm(forms.ModelForm):
 
 
 class FacilityForm(forms.ModelForm):
-    admin = forms.ModelChoiceField(queryset=bkm.User.objects.filter(Q(groups__name="Facility Owner") | Q(groups__name="Admin")))
     class Meta:
         model = bkm.Facility
-        fields = '__all__'
+        #fields = '__all__'
         widgets = {'longitude': forms.HiddenInput(), 'latitude': forms.HiddenInput()}
-        exclude = ('longitude', 'latitude',)
+        exclude = ('longitude', 'latitude', 'admin')
 
 
 class FacilityTagForm(forms.Form):
@@ -52,3 +51,7 @@ class SearchForm(forms.Form):
 class BookingForm(forms.Form):
     timeslot = forms.IntegerField(widget=forms.HiddenInput())
     date = forms.DateField(widget=forms.HiddenInput())
+
+
+class SingleIdForm(forms.Form):
+    ID = forms.IntegerField(widget=forms.HiddenInput())

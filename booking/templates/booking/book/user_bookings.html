@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+
+{% block head%}
+<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
+{% endblock %}
+
 {% block content%}
 {% csrf_token %}
-<script
-src="https://code.jquery.com/jquery-3.6.0.min.js"
-integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-crossorigin="anonymous"></script>
+
 <main>
     <table class="table fifty-center">
         <tr class="table-dark">
@@ -25,34 +27,31 @@ crossorigin="anonymous"></script>
         <td>{{ b.date}}</td>
         <td>{{ b.time_slot.start|time:'H:i' }}</td>
         <td>{{ b.time_slot.end|time:'H:i' }}</td>
-        <td><a onclick="cancelBooking({{b.id}})" href="#" class="btn btn-danger">Cancel</a></td>
+        <td><a onclick="reveal({{b.id}})" href="#" class="btn btn-danger">Cancel</a></td>
     </tr>
     {% endfor %}    
-    </table>    
+    </table>
+
+    <div id="bookingModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <p>Are you sure you want to cancel this booking?</p>
+                <button type="submit"class ="btn btn-danger">Yes, Cancel</button>
+    
+            </form>
+        </div>
+    </div>
 </main>
 
-
+<script src="{% static 'js/modal.js' %}"></script>
 <script>
-    function cancelBooking(bookingId){
-        let _url;
-        let param = window.location.pathname.split('/');
-        param = param[param.length-1];
-        if(isNaN(parseInt(param))){
-            _url = "/user/bookings";
-        }
-        else{
-            _url = "/user/bookings/"+param;
-        }
-
-        $.ajax({
-            type: "POST",
-            url: _url,
-            data:{ Data:bookingId },
-            headers:{
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            complete: window.location.replace("/")
-        }); 
+    function reveal(bookingId){
+        modal.style.display = "block";
+        $("#id_ID").val(bookingId);
     }
 </script>
 {% endblock %}
