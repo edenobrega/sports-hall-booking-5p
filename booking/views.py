@@ -254,23 +254,25 @@ class display_facility(LoginRequiredMixin, View):
         for f in facilities:
             data.append((f, fac_tags.filter(facility_id=f.id)))
 
-        return render(request, 'booking/facility/list_facility.html', {'data': data})        
+        return render(request, 'booking/facility/list_facility.html', {'data': data, "form":bkf.SingleIdForm()})        
 
     def post(self, request):
-        if check_if_super(request.user) or check_group(request.user, "Admin"):
-            data = bkm.Facility.objects.filter(id=request.POST["Data"])
-            data.delete()
-            messages.success(request, 'Successfully deleted Facility')
-    
-        elif check_group(request.user, "Facility Owner"):
-            data = bkm.Facility.objects.filter(admin=request.user.id, id=request.POST["Data"])
-            data.delete()
-            messages.success(request, 'Successfully deleted Facility')
+        form = bkf.SingleIdForm(request.POST)
+        if form.is_valid():
+            if check_if_super(request.user) or check_group(request.user, "Admin"):
+                data = bkm.Facility.objects.filter(id=form.cleaned_data['ID'])
+                data.delete()
+                messages.success(request, 'Successfully deleted Facility')
+        
+            elif check_group(request.user, "Facility Owner"):
+                data = bkm.Facility.objects.filter(admin=request.user.id, id=form.cleaned_data['ID'])
+                data.delete()
+                messages.success(request, 'Successfully deleted Facility')
 
-        else:
-            messages.error(request, 'No Access')
-            return redirect('get_booking_index')
-        return redirect('display_facilities')  
+            else:
+                messages.error(request, 'No Access')
+                return redirect('get_booking_index')
+        return redirect('display_facilities')
 
 
 # create_facility

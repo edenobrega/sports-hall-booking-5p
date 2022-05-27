@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/list_facility.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
+{% endblock %}
+
 {% block content %}
 {% csrf_token %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/list_facility.css' %}">
-<script
-src="https://code.jquery.com/jquery-3.6.0.min.js"
-integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-crossorigin="anonymous"></script>
+
 
 <main>
     <div class="table-responsive">
@@ -46,34 +47,46 @@ crossorigin="anonymous"></script>
                             <span>{{t.tag_id}}</span>
                             {% endfor %}
                         </td>
-                        <td><img src="{{d.0.image}}" /></td>
+                        <td>
+                            {% if d.0.image.public_id == 'placeholder' %}
+                            <img src="https://res.cloudinary.com/dcjvfcg2q/image/upload/v1653561731/placeholder_hm2nkw.png">
+                            {% else %}
+                            <img src="{{d.0.image}}" />
+                            {% endif %}
+                        </td>
                         <td><a href="{% url 'modify_facility' d.0.id %}" role="button" class="btn btn-success">Modify</a></td>
                         <td><a href="{% url 'modify_facility_tags' d.0.id %}" role="button" class="btn btn-success">Modify</a></td>
                         <td><a href="{% url 'modify_slots' d.0.id %}" role="button" class="btn btn-success">Modify</a></td>
-                        <td><a href="{% url 'list_facility_bookings' d.0.id%}" role="button" class="btn btn-primary">View</a></td>
-                        <td><a href="#" role="button" class="btn btn-danger" onclick="deleteFacility({{d.0.id}})">Delete</a></td>
+                        <td><a href="{% url 'facility_bookings' d.0.id%}" role="button" class="btn btn-primary">View</a></td>
+                        <td><button role="button" class="btn btn-danger" onclick="reveal({{d.0.id}})">Delete</button></td>
                     </tr>
                 {% endfor %}            
             </tbody>
         </table>    
     </div>
 
-
     <div class="create-parent">
         <a href="create">Create New</a>        
     </div>
+
+    <div id="bookingModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <p>Are you sure you want to delete this facility?</p>
+                <button type="submit" class="btn btn-danger">Make Booking</button>
+              </form>
+        </div>
+    </div>
 </main>
+<script src="{% static 'js/modal.js' %}"></script>
 <script>
-    function deleteFacility(facilityId){
-        $.ajax({
-            type: "POST",
-            url: "/facility/",
-            data:{ Data:facilityId },
-            headers:{
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            complete: window.location.replace("/")
-        }); 
+    function reveal(id){
+        modal.style.display = "block";
+        $("#id_ID").val(id);
     }
 </script>
 {% endblock %}
