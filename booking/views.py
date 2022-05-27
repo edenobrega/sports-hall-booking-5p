@@ -94,6 +94,12 @@ class index_view(View):
                 if get_distance(loc[1], loc[0], float(v.latitude), float(v.longitude)) <= radius:
                     valid.append(v)
             form = bkf.SearchForm()
+
+            if len(valid) == 0:
+                messages.error(request, 'No Results')
+            else:
+                messages.success(request, f'{len(valid)} Facilities Found')
+
             return render(request, 'booking/facility/search_results.html', {"returned": valid, "form":form})
 
         form = bkf.SearchForm()
@@ -138,7 +144,8 @@ class login_view(View):
             login(request, user)
             return redirect('get_booking_index')
         else:
-            return redirect('get_booking_index')   
+            messages.error(request, "Username or Password was incorrect")            
+            return redirect('login_view')
 
 
 # logout_view
@@ -161,7 +168,8 @@ class list_tags(LoginRequiredMixin, View):
         if check_if_super(request.user):
             data = bkm.Tag.objects.filter(id=request.POST['Data'])
             data.delete()
-        return redirect('get_booking_index')
+        messages.success(request, "Successfully deleted tag")
+        return redirect('list_tags')
 
 
 # edit_tag
@@ -199,20 +207,28 @@ class create_tag(LoginRequiredMixin, View):
             form = bkf.EditTagForm()
             return render(request, 'booking/tag/modify_tag.html', {'form': form})
         messages.error(request, 'No Access')
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
     def post(self, request):
         if check_if_super(request.user):
             form = bkf.EditTagForm(request.POST)
             if form.is_valid():
-                data = bkm.Tag(
-                    shorthand=form.cleaned_data['shorthand'],
-                    description=form.cleaned_data['description'],
-                    image=cloudinary.uploader.upload(request.FILES['image'])['url'])
+                data = bkm.Tag()
+                data.shorthand = form.cleaned_data['shorthand']
+                data.description = form.cleaned_data['description']
+                try:
+                    data.image = cloudinary.uploader.upload(request.FILES['image'])['url']
+                # No new image to upload
+                except MultiValueDictKeyError:
+                    messages.error(request, 'No image was uploaded with Tag')
+                    pass   
                 data.save()
-            return redirect(list_tags)
+                messages.success(request, 'Tag successfully created')
+            else:
+                messages.error(request, 'Failed to create Tag')
+            return redirect('list_tags')
         messages.error(request, 'No Access')
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 #endregion
 
 
@@ -231,7 +247,7 @@ class display_facility(LoginRequiredMixin, View):
 
         else:
             messages.error(request, 'No Access')
-            return redirect(get_booking_index)
+            return redirect('get_booking_index')
 
         data = []
 
@@ -244,14 +260,16 @@ class display_facility(LoginRequiredMixin, View):
         if check_if_super(request.user) or check_group(request.user, "Admin"):
             data = bkm.Facility.objects.filter(id=request.POST["Data"])
             data.delete()
+            messages.success(request, 'Successfully deleted Facility')
     
         elif check_group(request.user, "Facility Owner"):
             data = bkm.Facility.objects.filter(admin=request.user.id, id=request.POST["Data"])
             data.delete()
+            messages.success(request, 'Successfully deleted Facility')
 
         else:
             messages.error(request, 'No Access')
-            return redirect(get_booking_index)
+            return redirect('get_booking_index')
         return redirect('display_facilities')  
 
 
@@ -262,7 +280,7 @@ class create_facility(LoginRequiredMixin, View):
             form = bkf.FacilityForm()
             return render(request, 'booking/facility/add_facility.html', {'form': form})
         messages.error(request, 'No Access')
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
     def post(self, request):
         if check_if_super(request.user) or check_group(request.user, "Admin") or check_group(request.user, "Facility Owner"):
@@ -285,8 +303,15 @@ class create_facility(LoginRequiredMixin, View):
                     long = loc.longitude
                     lat = loc.latitude
 
+                try:
+                    _image = cloudinary.uploader.upload(request.FILES['image'])['url']
+                # No new image to upload
+                except MultiValueDictKeyError:
+                    messages.error(request, 'No image was supplied')
+                    _image = None
+
                 data = bkm.Facility(
-                    admin=form.cleaned_data['admin'],
+                    admin=request.user,
                     name=form.cleaned_data['name'],
                     postcode=form.cleaned_data['postcode'],
                     address=form.cleaned_data['address'],
@@ -295,9 +320,13 @@ class create_facility(LoginRequiredMixin, View):
                     indoor=form.cleaned_data['indoor'],
                     contact_email=form.cleaned_data['contact_email'],
                     contact_phone=form.cleaned_data['contact_phone'],
-                    image=cloudinary.uploader.upload(request.FILES['image'])['url']
+                    image=_image
                 )
+       
                 data.save()
+                messages.success(request, 'Facility Added')
+            else:
+                messages.error(request, 'Failed to add Facility')
             return redirect('display_facilities')
         messages.error(request, 'No Access')
         return redirect('display_facilities')
@@ -313,7 +342,7 @@ class modify_facility(LoginRequiredMixin, View):
             data = bkm.Facility.objects.get(id=facil_id)
             form = bkf.FacilityForm(instance=data)
         else:
-            return redirect(get_booking_index)
+            return redirect('get_booking_index')
         return render(request, 'booking/facility/add_facility.html', {'form': form})
 
     def post(self, request, facil_id):
@@ -335,8 +364,12 @@ class modify_facility(LoginRequiredMixin, View):
                 except MultiValueDictKeyError:
                     pass            
                 data.save()
-            return redirect(display_facility)
-        return redirect(get_booking_index)
+                messages.success(request, 'Successfully modified Facility')
+            else:
+                messages.error(request, 'Failed to modify facility')
+            return redirect('display_facilities')
+        messages.error(request, 'No Access')
+        return redirect('get_booking_index')
 
 
 # modify_slots
@@ -378,7 +411,7 @@ class modify_timeslots(LoginRequiredMixin, View):
             
             return render(request, 'booking/timeslots/modify_timeslots.html', { "data": list(data.order_by('id')), "facil_id": facil_id })
 
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
     def post(self, request, facil_id):
         if check_if_owned(request.user, facil_id) or check_group(request.user, "Admin"):
@@ -446,8 +479,10 @@ class modify_timeslots(LoginRequiredMixin, View):
                 bk.saturday = d[8]
                 bk.sunday = d[9]
                 bk.save()
+            messages.success(request, 'Successfully modifed Time slots')
+            return redirect('display_facilities')
 
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
 
 # modify_facility_tags
@@ -461,7 +496,7 @@ class modify_facility_tags(LoginRequiredMixin, View):
             info_tup = (facil_id, bkm.Facility.objects.get(id=facil_id).name)
 
             return render(request, 'booking/tag/modify_facility_tags.html', {'data': form_data, 'tags': tags, 'info_tup': info_tup})
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 
     def post(self, request, facil_id):
         if check_if_owned(request.user, facil_id) or check_group(request.user, "Admin"):
@@ -489,8 +524,10 @@ class modify_facility_tags(LoginRequiredMixin, View):
                 fac = bkm.Facility.objects.get(id=facil_id)
                 new = bkm.FacilityTag(facility_id=fac, tag_id=tg)
                 new.save()
+            messages.success(request, 'Facility Tags Successfully Updated')
+            return redirect('display_facilities')
 
-        return redirect(get_booking_index)
+        return redirect('get_booking_index')
 #endregion
 
 
@@ -645,7 +682,8 @@ class view_times(LoginRequiredMixin, View):
                         user_id=request.user,
                         date=_date)
                     data.save()
-                
+                    messages.success(request, 'Booking Created!')
+                    return redirect('list_bookings')
         return redirect('get_booking_index')
 
 
@@ -659,6 +697,7 @@ class list_facility_bookings(LoginRequiredMixin, View):
             bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
             return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
+        messages.error(request, 'Access denied')
         return redirect('get_booking_index')
 
 
@@ -675,7 +714,8 @@ class list_bookings(LoginRequiredMixin, View):
                     messages.error(request, "No matching user found")
         if not data:
             data = bkm.Booking.objects.filter(user_id=request.user.id)
-
+        if not len(data):
+            messages.error(request, 'No Bookings Found')
         return render(request, 'booking/book/user_bookings.html', {'bookings': data})
 
     def post(self, request, user_id=''):
@@ -686,13 +726,16 @@ class list_bookings(LoginRequiredMixin, View):
                 data = bkm.Booking.objects.filter(id=request.POST['Data'], user_id=user_id)
                 if data.exists():
                     data.delete()
+                    messages.success(request, 'Booking cancelled')
             else:
                 data = bkm.Booking.objects.filter(id=request.POST['Data'])
                 if data.exists():
                     data.delete()
+                    messages.success(request, 'Booking cancelled')
         else:
             data = bkm.Booking.objects.filter(id=request.POST['Data'], user_id=request.user)
             if data.exists():
                 data.delete()
+                messages.success(request, 'Booking cancelled')
         return redirect('list_bookings')
 #endregion
