@@ -35,7 +35,7 @@ urlpatterns = [
     path(
         'facility/book/list/<int:facil_id>',
         bkv.list_facility_bookings.as_view(),
-        name='list_facility_bookings'
+        name='facility_bookings'
     ),
     path(
         'user/bookings/<int:user_id>',

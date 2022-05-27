@@ -696,8 +696,25 @@ class list_facility_bookings(LoginRequiredMixin, View):
 
             bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
-            return render(request, 'booking/book/view_bookings.html', {'bookings': bookings})
+            return render(request, 'booking/book/view_bookings.html', {'bookings': bookings,"form":bkf.SingleIdForm()})
         messages.error(request, 'Access denied')
+        return redirect('get_booking_index')
+    
+    def post(self, request, facil_id):
+        print("here we are")
+        if (check_if_super(request.user) or 
+            check_group(request.user, "Admin") or 
+            check_if_owned(request.user, facil_id)):
+
+            form = bkf.SingleIdForm(request.POST)
+            if form.is_valid():
+                booking = bkm.Booking.objects.filter(facility_id=facil_id, id=form.cleaned_data['ID'])
+                if booking.exists():
+                    booking.delete()
+                    messages.success(request, 'Booking was cancelled')
+            else:
+                messages.error(request, 'A problem occurred with the form')
+            return redirect('facility_bookings', facil_id=facil_id)
         return redirect('get_booking_index')
 
 

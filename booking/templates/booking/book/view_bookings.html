@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/modal.css' %}">
+{% endblock %}
 {% block content%}
 <main>
     <table class="table fifty-center">
@@ -26,11 +30,30 @@
         <td>{{ b.date}}</td>
         <td>{{ b.time_slot.start|time:'H:i' }}</td>
         <td>{{ b.time_slot.end|time:'H:i' }}</td>
-        <td><a href="#" class="btn btn-danger">Cancel</a></td>
+        <td><button onclick="reveal({{b.id}})" class="btn btn-danger">Cancel</button></td>
     </tr>
     {% endfor %}    
-    </table>    
+    </table>
+
+    <div id="bookingModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <p>Are you sure you want to cancel this booking?</p>
+                <button type="submit" class="btn btn-danger">Cancel Booking</button>
+              </form>
+        </div>
+    </div>
 </main>
 
-
+<script src="{% static 'js/modal.js' %}"></script>
+<script>
+    function reveal(id){
+        modal.style.display = "block";
+        $("#id_ID").val(id);
+    }
+</script>
 {% endblock %}
