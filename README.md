@@ -61,7 +61,12 @@ Modify Facility Tags
 ### Existing Features
 - Nav bar leading to differnt pages
 ![](documentation/screenshots/header.png)
-- Search form on index
+
+- Form to search for facilities on index
+    - Takes a tag via drop down
+    - A location (preferably a town)
+    - A distance in miles
+    ![](documentation/screenshots/search_form.png)
 
 - A list of sports offered
     - Taken from the "Tag" table and updates live to reflect the table
@@ -76,12 +81,6 @@ Modify Facility Tags
 - Page to see all of your bookings
     - With the functionality to cancel it
     ![](documentation/screenshots/my_bookings.png)
-
-- Form to search for facilities
-    - Takes a tag via drop down
-    - A location (preferably a town)
-    - A distance in miles
-    ![](documentation/screenshots/search_form.png)
 
 - A Search results page that lists relevant facilities and has a form to make another search
     - Each card will have the facility image and its location
@@ -102,23 +101,45 @@ Modify Facility Tags
     ![](documentation/screenshots/admin_timeslots.png)
 
 
-
-
-
-
-
-
-
-
+# Deployment
+The app was deployed using heroku, to do so, the steps are as follows:
+1. You will need a [Cloudinary](https://cloudinary.com) account to be able to store images and static files
+    1. Go to [Cloudinary](https://cloudinary.com)
+    2. Create an account
+    3. Go to your [console](https://cloudinary.com/console/)
+    4. A square should be present with the header "Api Environment variable", copy this value for later
+2. Create an account on heroku and login
+3. In Heroku, select new and "Create new app"
+4. Select a unique name and select a region for hosting, and create the app
+1. Next we need to add the "Heroku Postgres" add-on and get the database "URI"
+    1. Navigate to the Resources tab 
+    2. A search bar saying "Quickly add add-ons from Elements" should be present, in it search for "Heroku Postgres"
+    3. Add the add-on, and in the popup which asks for a "Plan name" select "Hobby Dev - Free"
+    1. On the "Resources tab" select the add-on we have added, and select the "Settings" tab
+    1. A section titled "Database Credentials" will have a button saying "View Credentials..." select it and copy the the string given under "URI" and keep it somewhere safe for a later step
+5. Navigate to settings for your new app, scroll down and click the button "Reveal Config Vars"
+6. Add a new variable called "CLOUDINARY_URL" and paste in the value from step 1, make sure you remove the "CLOUDINARY_URL=" at the start of the key
+7. Add another variable called "DATABASE_URL" and add the URI gotten from step 5
+8. Create another variable called "SECRET_KEY" and name it anything you want
+9. Now create the final variable "DEBUG" and set it to FALSE
+1. As of writing this, you will need to deploy the site using the heroku CLI
+    1. Go to [this](https://devcenter.heroku.com/articles/heroku-cli) link and find your prefered way to install the heroku CLI
+    2. Once installed login to your heroku account using ```heroku login``` 
+        - if you are following this from gitpod or a inbrowser IDE instead use ```heroku login -i``` to login from the browser 
+    3. Now clone the respostory using ```git clone https://github.com/edenobrega/sports-hall-booking-5p```
+    4. And now the following commands:
+        1. ```git pull origin```
+        2. ```git checkout main```
+        3. ```heroku git:remote -a app-name``` "app-name" being what you named your heroku app
+        4. ```git push heroku main:main```
+# Local Deployment
 
 
 ### Features left to implent
 - Use googles geocode api as its more precise (currently it is paid for)
 - Have a clickable map for facility owners to select where there facility it
-- Results page will have a form on it
 - Admins/Facility owners able to cancel bookings
 - Email updates to users when booked or cancelled
-- Upload related image to Tag to display it on front page
 - Show available days on results screen
 
 ## Technologies used
