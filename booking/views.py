@@ -161,14 +161,19 @@ class list_tags(LoginRequiredMixin, View):
     def get(self, request):
         if check_if_super(request.user):
             tags = bkm.Tag.objects.all().order_by('id')
-            return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags})
+            return render(request, 'booking/tag/list_tags.html', {'fac_tags': tags, 'form':bkf.SingleIdForm()})
         return redirect('get_booking_index')
 
     def post(self, request):
-        if check_if_super(request.user):
-            data = bkm.Tag.objects.filter(id=request.POST['Data'])
-            data.delete()
-        messages.success(request, "Successfully deleted tag")
+        form = bkf.SingleIdForm(request.POST)
+        if form.is_valid():
+            if check_if_super(request.user):
+                data = bkm.Tag.objects.filter(id=form.cleaned_data['ID'])
+                data.delete()
+                messages.success(request, "Successfully deleted tag")                
+        else:
+            messages.error(request, 'Something went wrong with the form')
+
         return redirect('list_tags')
 
 
@@ -220,7 +225,7 @@ class create_tag(LoginRequiredMixin, View):
                     data.image = cloudinary.uploader.upload(request.FILES['image'])['url']
                 # No new image to upload
                 except MultiValueDictKeyError:
-                    messages.error(request, 'No image was uploaded with Tag')
+                    messages.warning(request, 'No image was uploaded with Tag')
                     pass   
                 data.save()
                 messages.success(request, 'Tag successfully created')
@@ -309,7 +314,7 @@ class create_facility(LoginRequiredMixin, View):
                     _image = cloudinary.uploader.upload(request.FILES['image'])['url']
                 # No new image to upload
                 except MultiValueDictKeyError:
-                    messages.error(request, 'No image was supplied')
+                    messages.warning(request, 'No image was supplied')
                     _image = None
 
                 data = bkm.Facility(
