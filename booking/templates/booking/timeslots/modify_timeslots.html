@@ -8,8 +8,6 @@
 {% block content %}
 {% csrf_token %}
 
-
-
 <main>
     <h2 class="hide header">Start time must be before the End time</h2>
     <table id="slot-table" class="table fifty-center">
@@ -72,7 +70,7 @@
                 '<td><input type="checkbox" /></td>',
                 '<td><button onclick="removeTimeSlot(', "'slot-"+id+ "')" +'"' + ">Remove</button></td>"
             ].join('')
-        )
+        );
         id += 1;
     }
 
@@ -81,7 +79,7 @@
     }
 
     function submit(){
-        tableData = "";
+        let tableData = "";
         table_rows = $("tr");
 
         form_fail = false;

@@ -5,6 +5,7 @@ img{
 .create-parent{
     width:fit-content;
     margin: 0 auto;
+    margin-bottom: 25px;
 }
 
 th{
