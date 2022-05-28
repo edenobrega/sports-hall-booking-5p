@@ -1,5 +1,5 @@
 # Bookit
-A website for booking the use of and making postings for sports facilities.
+A website for booking the use of and making postings for sports facilities in the UK.
 
 ## User Stories
 - As a user I want to be able to create an account
@@ -86,7 +86,7 @@ Modify Facility Tags
     - Each card will have the facility image and its location
     ![](documentation/screenshots/search_results.png)
 
-#### Admin Features
+### Admin Features
 - See all the facilities you are in charge of
     - Or if site Admin see all facilities
     ![](documentation/screenshots/admin_facilities.png)
@@ -100,6 +100,27 @@ Modify Facility Tags
 - Edit, Add and Remove timeslots from facilities
     ![](documentation/screenshots/admin_timeslots.png)
 
+### Other
+- When a facility is made, using geopy the location is geocoded using given address and the longitude latitude is stored, and using the [Haversine formula](https://en.wikipedia.org/wiki/Haversine_formula) and javascript code I turned to python from [here](https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula/27943#27943) whenever someone makes a search for facilities all results will be within the radius set. 
+
+## CRUD
+### Create
+- Creating a new Facility
+![](documentation/CRUD/facility_create.png) 
+### Read
+- Viewing Facilities
+![](documentation/CRUD/facility_read.png)
+### Update
+- Updating a Facility
+![](documentation/CRUD/facility_modify.png)
+### Delete
+- Deleteing a Facility
+![](documentation/CRUD/facility_delete.PNG)
+### Multiple in one
+- Updating a facilities tags, this involves `Create`, `Read`, `Delete`
+![](documentation/CRUD/facility_tags_modify_delete_add.png)
+- Updating a timeslots involves entire of CRUD
+![](documentation/CRUD/timeslots_whole_crud.png)
 ## Features left to implent
 - Use googles geocode api as its more precise (currently it is paid for)
 - Have a clickable map for facility owners to select where there facility it
