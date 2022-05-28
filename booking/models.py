@@ -34,7 +34,6 @@ class FacilityTag(models.Model):
     facility_id = models.ForeignKey(Facility(), on_delete=models.CASCADE)
     tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
-
     def __str__(self):
         return f"fid:{self.facility_id} tid:{self.tag_id}"
 

@@ -1,3 +1,5 @@
+Return to [README](README.md)
+
 # Testing
 ## User Accounts
 - When trying to login to an account that doesnt exist or with incorrect details the error message is shown
@@ -55,3 +57,14 @@
 ![](documentation/CRUD/facility_tags_modify_delete_add.png)
 - Can Modify Facility Time Slots
 ![](documentation/CRUD/timeslots_whole_crud.png) 
+
+# Responsiveness
+Screenshots taken on mobile for the two pages that a user who is booking would see
+- Index
+![](documentation/testing/index_mobile.png)
+- Search Result
+![](documentation/testing/search_result_mobile.png)
+
+# Code Validation
+- PEP8 validation for view.py, giving no errors or warnings
+![](documentation/view_py.png)

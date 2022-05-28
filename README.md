@@ -115,7 +115,7 @@ Modify Facility Tags
 ![](documentation/CRUD/facility_modify.png)
 ### Delete
 - Deleteing a Facility
-![](documentation/CRUD/facility_delete.PNG)
+![](documentation/CRUD/facility_delete.png)
 ### Multiple in one
 - Updating a facilities tags, this involves `Create`, `Read`, `Delete`
 ![](documentation/CRUD/facility_tags_modify_delete_add.png)
@@ -127,6 +127,9 @@ Modify Facility Tags
 - Admins/Facility owners able to cancel bookings
 - Email updates to users when booked or cancelled
 - Show available days on results screen
+
+# Testing
+See [TESTING.md](TESTING.md)
 
 # Deployment
 The app was deployed using heroku, to do so, the steps are as follows:
