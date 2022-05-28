@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load month_name %}
+{% load ordinal_format %}
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/calender.css' %}">
@@ -9,7 +10,6 @@
 {% endblock %}
 
 {% block content%}
-
 
 <main>
     <div id="calendar">
@@ -60,7 +60,7 @@
                         {% elif row.2|length == 0%}
                             <td class="">{{row.0}}</td>
                         {% else %}
-                            <td class="calendar-clickable" onclick="revealSlots('month-{{current_month.0}}-day-{{row.0}}')">{{row.0}}</td>
+                            <td id="month-{{next_month.0}}-day-{{row.0}}" class="calendar-clickable" onclick="revealSlots('month-{{next_month.0}}-day-{{row.0}}')">{{row.0}}</td>
                         {% endif %}
                         
                     {% endfor %}            
@@ -69,7 +69,7 @@
             </tbody>
 
         </table>
-        <a class="btn btn-primary" onclick="swapCalendars()">See <span class="hidden">{{current_month.0|month_name}}</span><span>{{next_month.0|month_name}}</span></a>
+        <a class="btn btn-primary" onclick="swapCalendars()">See <span id="current-button" class="hidden">{{current_month.0|month_name}}</span><span id="next-button">{{next_month.0|month_name}}</span></a>
     </div>
 
     <div id="slot-holder">
@@ -86,6 +86,9 @@
             {% for cm in current_month|slice:"1:" %}
                 {% for row in cm %}
                     {% if row.0 != 0 and row.2|length != 0 %}
+                    <tr class="month-{{current_month.0}}-day-{{row.0}} hidden">
+                        <td colspan="4">{{row.0|ordinal_format}} of {{current_month.0|month_name}}</td>
+                    </tr>
                         {% for slot in row.2 %}
                             {% if slot.1 %}
                             <tr class="month-{{current_month.0}}-day-{{row.0}} booked hidden">
@@ -109,19 +112,22 @@
             {% for nm in next_month|slice:"1:" %}
             {% for row in nm %}
                 {% if row.0 != 0 and row.2|length != 0 %}
+                    <tr class="month-{{next_month.0}}-day-{{row.0}} hidden">
+                        <td colspan="4">{{row.0|ordinal_format}} of {{next_month.0|month_name}}</td>
+                    </tr>
                     {% for slot in row.2 %}
                         {% if slot.1 %}
-                        <tr class="month-{{current_month.0}}-day-{{row.0}} booked hidden">
+                        <tr class="month-{{next_month.0}}-day-{{row.0}} booked hidden">
                             <td>{{row.0}}</td>
                             <td>{{slot.0.start|time:'H:i'}}</td>
                             <td>{{slot.0.end|time:'H:i'}}</td>
                         </tr>
                         {% else %}
-                        <tr class="month-{{current_month.0}}-day-{{row.0}} hidden">
+                        <tr class="month-{{next_month.0}}-day-{{row.0}} hidden">
                             <td>{{row.0}}</td>
                             <td>{{slot.0.start|time:'H:i'}}</td>
                             <td>{{slot.0.end|time:'H:i'}}</td>
-                            <td onclick="book({{row.0}}, {{current_month.0}}, {{slot.0.id}})">Book</td>
+                            <td onclick="book({{row.0}}, {{next_month.0}}, {{slot.0.id}})">Book</td>
                         </tr>
                         {% endif %}
                     {% endfor %}
@@ -148,7 +154,7 @@
 
 <script src="{% static 'js/modal.js' %}"></script>
 <script>
-    let current_month_revealed = null;
+    let current_month_revealed = true;
     let currently_revealed = null;
     function revealSlots(revealTarget){
         $("."+currently_revealed).addClass("hidden");
@@ -160,6 +166,28 @@
         modal.style.display = "block";
         $("#id_timeslot").val(slotId);
         $("#id_date").val(new Date().getFullYear()+"-"+month + "-" + day);
+    }
+
+    function swapCalendars(){
+        current_month_revealed = !current_month_revealed;
+        if(current_month_revealed){
+            $("#current-month-container").removeClass("hidden");
+            $("#current-month-header").removeClass("hidden");
+            $("#next-month-container").addClass("hidden");
+            $("#next-month-header").addClass("hidden");
+            $("#current-button").addClass("hidden");
+            $("#next-button").removeClass("hidden");
+        }
+        else{
+            $("#current-month-container").addClass("hidden");
+            $("#current-month-header").addClass("hidden");
+            $("#next-month-container").removeClass("hidden");
+            $("#next-month-header").removeClass("hidden");
+
+            $("#current-button").removeClass("hidden");
+            $("#next-button").addClass("hidden");            
+        }
+
     }
 </script>
 {% endblock %}
