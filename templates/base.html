@@ -31,8 +31,12 @@ crossorigin="anonymous"></script>
     <header class="d-flex flex-wrap align-items-center justify-content-center py-3 mb-4 border-bottom">
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-        <li><a href="#" class="nav-link px-2 link-dark">Search</a></li>
+        {% if user|has_group:"Facility Owner" or request.user|has_group:"Admin" or user.is_superuser %}
         <li><a href="{% url 'display_facilities' %}" class="nav-link px-2 link-dark">Facilities</a></li>  
+        {% if request.user|has_group:"Admin" or user.is_superuser %}
+        {% endif %}
+        <li><a href="{% url 'list_tags' %}" class="nav-link px-2 link-dark">Tags</a></li> 
+        {% if %}
         {% if user.is_authenticated %}
         <li><a href="{% url 'list_bookings' %}" class="nav-link px-2 link-dark">Bookings</a></li>     
         <li><a href="/logout" class="nav-link px-2 link-dark">Logout</a></li>
