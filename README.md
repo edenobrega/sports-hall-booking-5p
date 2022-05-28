@@ -1,5 +1,6 @@
 # Bookit
-A website for booking the use of and making postings for sports facilities in the UK.
+A website for booking the use of and making postings for sports facilities in the UK. 
+See [here](https://bookit-5p.herokuapp.com/) for the deployed site.
 
 ## User Stories
 - As a user I want to be able to create an account
@@ -124,7 +125,6 @@ Modify Facility Tags
 ## Features left to implent
 - Use googles geocode api as its more precise (currently it is paid for)
 - Have a clickable map for facility owners to select where there facility it
-- Admins/Facility owners able to cancel bookings
 - Email updates to users when booked or cancelled
 - Show available days on results screen
 
