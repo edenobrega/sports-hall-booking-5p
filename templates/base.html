@@ -34,9 +34,9 @@ crossorigin="anonymous"></script>
         {% if user|has_group:"Facility Owner" or request.user|has_group:"Admin" or user.is_superuser %}
         <li><a href="{% url 'display_facilities' %}" class="nav-link px-2 link-dark">Facilities</a></li>  
         {% if request.user|has_group:"Admin" or user.is_superuser %}
+        <li><a href="{% url 'list_tags' %}" class="nav-link px-2 link-dark">Tags</a></li>         
         {% endif %}
-        <li><a href="{% url 'list_tags' %}" class="nav-link px-2 link-dark">Tags</a></li> 
-        {% if %}
+
         {% if user.is_authenticated %}
         <li><a href="{% url 'list_bookings' %}" class="nav-link px-2 link-dark">Bookings</a></li>     
         <li><a href="/logout" class="nav-link px-2 link-dark">Logout</a></li>
