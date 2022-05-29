@@ -35,6 +35,9 @@
                 <div class="card-body">
                     <p class="card-text">{{r.name}}</p>
                     <p class="card-text">{{r.postcode}}, {{r.address}}</p>
+                    <p class="card-text">Contact Information:</p>
+                    <p class="card-text">{{r.contact_email}}</p>
+                    <p class="card-text">{{r.contact_phone}}</p>
                     <a href="{% url 'make_booking' r.id %}">View Times</a>
                 </div>
             </div>
