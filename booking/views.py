@@ -130,7 +130,6 @@ class index_view(View):
 
 # register
 class register_view(View):
-
     def get(self, request):
         form = bkf.SignUpForm()
         return render(request, 'booking/register.html', {'form': form})
@@ -442,7 +441,6 @@ class modify_facility(LoginRequiredMixin, View):
 
 # modify_slots
 class modify_timeslots(LoginRequiredMixin, View):
-
     def get(self, request, facil_id):
         if (check_if_owned(request.user, facil_id) or
                 check_group(request.user, "Admin")):
@@ -701,14 +699,10 @@ class view_times(LoginRequiredMixin, View):
                     elif day[1] == "Sun":
                         day[2] = [[x, False] for x in times if x.sunday]
 
-            found = False
             # Loop over each booking
             for b in bookings:
                 # loop over each row of calendar
                 for cr in calendar_rows[1:]:
-                    if found:
-                        found = False
-                        break
                     # loop over each day
                     for day in cr:
                         # Check if days match
@@ -717,8 +711,6 @@ class view_times(LoginRequiredMixin, View):
                             dex = day[2].index([b.time_slot, False])
                             # Set the flag to true
                             day[2][dex][1] = True
-                            # Indicate to outside flag to no longer loop
-                            found = True
                             break
 
             return calendar_rows
@@ -739,7 +731,8 @@ class view_times(LoginRequiredMixin, View):
             {
                 'current_month': x,
                 'next_month': y,
-                'form': form
+                'form': form,
+                'day': datetime.datetime.now().day
             }
         )
 
@@ -751,6 +744,12 @@ class view_times(LoginRequiredMixin, View):
             _timeslot = bkm.TimeSlot.objects.get(
                 id=form.cleaned_data['timeslot'])
             _date = form.cleaned_data['date']
+
+            print(form.cleaned_data['date'].day)
+            if _date.month == datetime.datetime.now().month:
+                if _date.day <= datetime.datetime.now().day:
+                    messages.error(request, 'Cannot Book A Day before or on today')
+                    return redirect('make_booking', facil_id=facil_id)
 
             exists = bkm.Booking.objects.filter(
                 facility_id=_facility,
@@ -792,8 +791,8 @@ class view_times(LoginRequiredMixin, View):
                         date=_date)
                     data.save()
                     messages.success(request, 'Booking Created!')
-                    return redirect('list_bookings')
-        return redirect('get_booking_index')
+                    return redirect('make_booking', facil_id=facil_id)
+        return redirect('make_booking', facil_id=facil_id)
 
 
 # list_facility_bookings
@@ -817,7 +816,6 @@ class list_facility_bookings(LoginRequiredMixin, View):
         return redirect('get_booking_index')
 
     def post(self, request, facil_id):
-        print("here we are")
         if (check_if_super(request.user) or
                 check_group(request.user, "Admin") or
                 check_if_owned(request.user, facil_id)):
@@ -871,20 +869,27 @@ class list_bookings(LoginRequiredMixin, View):
                     # Checking user_id is probably not needed, but might aswell
                     data = bkm.Booking.objects.filter(
                         id=form.cleaned_data['ID'], user_id=user_id)
-                    if data.exists():
-                        data.delete()
-                        messages.success(request, 'Booking cancelled')
                 else:
                     data = bkm.Booking.objects.filter(
                         id=form.cleaned_data['ID'])
-                    if data.exists():
-                        data.delete()
-                        messages.success(request, 'Booking cancelled')
+                if data.exists():
+                    data.delete()
+                    messages.success(request, 'Booking cancelled')
+                else:
+                    messages.error(request, 'Failed to cancel the booking')
+            else:
+                messages.error(request, 'Failed to cancel the booking')
         else:
-            data = bkm.Booking.objects.filter(
-                id=form.cleaned_data['ID'], user_id=request.user)
-            if data.exists():
-                data.delete()
-                messages.success(request, 'Booking cancelled')
+            form = bkf.SingleIdForm(request.POST)
+            if form.is_valid():
+                data = bkm.Booking.objects.filter(
+                    id=form.cleaned_data['ID'], user_id=request.user)
+                if data.exists():
+                    data.delete()
+                    messages.success(request, 'Booking cancelled')
+                else:
+                    messages.error(request, 'Failed to cancel the booking')
+            else:
+                messages.error(request, 'Failed to cancel the booking')
         return redirect('list_bookings')
 # endregion

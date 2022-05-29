@@ -41,7 +41,9 @@
                         {% if row.0 == 0 %}
                             <td></td>
                         {% elif row.2|length == 0%}
-                            <td class="">{{row.0}}</td>
+                            <td>{{row.0}}</td>
+                        {% elif row.0 <= day %}
+                            <td>{{row.0}}</td>
                         {% else %}
                             <td class="calendar-clickable" onclick="revealSlots('month-{{current_month.0}}-day-{{row.0}}')">{{row.0}}</td>
                         {% endif %}
