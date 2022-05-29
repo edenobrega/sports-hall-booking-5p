@@ -748,7 +748,10 @@ class view_times(LoginRequiredMixin, View):
             print(form.cleaned_data['date'].day)
             if _date.month == datetime.datetime.now().month:
                 if _date.day <= datetime.datetime.now().day:
-                    messages.error(request, 'Cannot Book A Day before or on today')
+                    messages.error(
+                        request,
+                        'Cannot Book A Day before or on today'
+                    )
                     return redirect('make_booking', facil_id=facil_id)
 
             exists = bkm.Booking.objects.filter(
