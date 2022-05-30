@@ -9,4 +9,10 @@
     <hr>
     <button type="submit" class="btn btn-success">Save Changes</button>
   </form>
+
+<script>
+$("label[for='id_image'] span").remove();
+$("label[for='id_image']").removeClass("requiredField");
+</script>
+
 {% endblock %}
