@@ -47,6 +47,7 @@ def check_if_super(logged_user):
 def get_distance(lat1, lon1, lat2, lon2):
     '''
     Get the distance between two locations
+    https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
     '''
     def deg2rad(deg):
         return deg * (math.pi/180)
