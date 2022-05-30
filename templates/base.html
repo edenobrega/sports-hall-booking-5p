@@ -54,7 +54,7 @@ crossorigin="anonymous"></script>
 <section>
     {% for msg in messages %}
         <!-- all django message tags mirror bootstrap, except error/danger -->
-        <aside class="alert {% if msg.tags == 'error' %}alert-danger{% else %}alert-{{ msg.tags }}{% endif %} text-center" role="alert">
+        <aside class="alert {% if msg.tags == 'error' %}alert-danger{% else %}alert-{{ msg.tags }}{% endif %} text-center">
             <h3>{{ msg }}</h3>
         </aside>
     {% endfor %}
