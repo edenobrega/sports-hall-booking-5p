@@ -356,9 +356,9 @@ class create_facility(LoginRequiredMixin, View):
                         "postalcode": form.cleaned_data['postcode'],
                         "country": "gb"})
                 if not loc:
-                    # Default to location of code institute :)
-                    long = 53.2978186
-                    lat = -6.1823261
+                    # Default to Trafalgar square
+                    long = 51.5080917
+                    lat = -0.1302859
                 else:
                     long = loc.longitude
                     lat = loc.latitude
