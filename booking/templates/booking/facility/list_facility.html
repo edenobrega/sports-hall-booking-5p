@@ -51,7 +51,7 @@
                             {% if d.0.image.public_id == 'placeholder' %}
                             <img src="https://res.cloudinary.com/dcjvfcg2q/image/upload/v1653561731/placeholder_hm2nkw.png">
                             {% else %}
-                            <img src="{{d.0.image}}" />
+                            <img src="{{d.0.image}}" alt="{{d.o.name}}" />
                             {% endif %}
                         </td>
                         <td><a href="{% url 'modify_facility' d.0.id %}" role="button" class="btn btn-success">Modify</a></td>
