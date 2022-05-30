@@ -847,11 +847,22 @@ class list_bookings(LoginRequiredMixin, View):
                     check_group(request.user, "Admin")):
                 user = bkm.User.objects.filter(id=user_id)
                 if user.exists():
-                    data = bkm.Booking.objects.filter(user_id=user_id)
+                    data = bkm.Booking.objects.filter(
+                        user_id=user_id,
+                        date__gt=(
+                            datetime.datetime.now()
+                            - datetime.timedelta(days=1)
+                        )
+                    )
                 else:
                     messages.error(request, "No matching user found")
         if not data:
-            data = bkm.Booking.objects.filter(user_id=request.user.id)
+            data = bkm.Booking.objects.filter(
+                    user_id=request.user.id,
+                    date__gt=(
+                        datetime.datetime.now() - datetime.timedelta(days=1)
+                    )
+            )
         if not len(data):
             messages.error(request, 'No Bookings Found')
         return render(
