@@ -83,10 +83,29 @@ Screenshots taken on mobile for the two pages that a user who is booking would s
 ![](documentation/testing/urls.png)
 
 ## HTML
-Validated using https://validator.w3.org, not all pages were passed through validator as aside from those linked below all require you to be logged in.
+Validated using https://validator.w3.org
 - [Index](https://validator.w3.org/nu/?doc=https%3A%2F%2Fbookit-5p.herokuapp.com)
 - [Login](https://validator.w3.org/nu/?doc=https://bookit-5p.herokuapp.com/login)
 - [Register](https://validator.w3.org/nu/?doc=https://bookit-5p.herokuapp.com/register)
+
+- view_times.html
+![](documentation/testing/make_booking.png)
+
+- search_results.html
+![](documentation/testing/search_results.png)
+
+- view_bookings
+![](documentation/testing/view_facility_bookings.png)
+
+- modify_timeslots
+![](documentation/testing/modify_timeslots.png)
+
+- modify_facility_tags
+![](documentation/testing/modify_facility_tags.png)
+
+- modify_facility
+![](documentation/testing/modify_facility.png)
+
 
 ## CSS
 For css I have used https://jigsaw.w3.org/css-validator to validate my stylesheets
@@ -100,4 +119,4 @@ For css I have used https://jigsaw.w3.org/css-validator to validate my styleshee
 - [modify_facility_tags.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564284%2Fstatic%2Fcss%2Fmodify_facility_tags.243e84a9bbb7.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
 - [modify_timeslots.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564283%2Fstatic%2Fcss%2Fmodify_timeslots.ea40933244ba.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
 - [Search_results.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653868144%2Fstatic%2Fcss%2Fsearch_results.73235d1e58a0.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
-- [style.css](https://res.cloudinary.com/dcjvfcg2q/raw/upload/v1653564282/static/css/style.c73d8f77d3d4.css)
+- [style.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564282%2Fstatic%2Fcss%2Fstyle.c73d8f77d3d4.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)

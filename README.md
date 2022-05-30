@@ -201,3 +201,13 @@ The following steps will all be done in your IDE Terminal
 - For my IDE I used Gitpod, [link](https://www.gitpod.io/).
 - To host static files like images and css i used [Cloudinary](https://cloudinary.com/) and its django library "cloudinary"
 - To deploy the website I used [Heroku](https://dashboard.heroku.com/)
+
+## Credits
+Used these images from pixabay:
+- https://pixabay.com/photos/olympic-swimming-pool-water-sport-1185774/
+- https://pixabay.com/photos/squash-sport-man-game-racket-ball-793063/
+- https://pixabay.com/photos/volleyball-ball-player-team-sport-520093/
+- https://pixabay.com/photos/table-tennis-passion-sport-1208377/
+- https://pixabay.com/photos/soccer-support-football-boots-duel-606235/
+- https://pixabay.com/photos/basketball-sports-athlete-player-95607/
+- https://pixabay.com/photos/badminton-bat-activity-leisure-4139024/
