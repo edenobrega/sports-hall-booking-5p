@@ -157,7 +157,7 @@ The app was deployed using heroku, to do so, the steps are as follows:
 7. Add another variable called "DATABASE_URL" and add the URI gotten from step 5
 8. Create another variable called "SECRET_KEY" and name it anything you want
 9. If you want to deploy the app in DEBUG mode then follow the indented step, if not skip it
-    1. Create the final variable "DEBUG" and set it to FALSE
+    1. Create the final variable "DEBUG" and set it to FALSE, or delete it/don't create it at all
 1. As of writing this, you will need to deploy the site using the heroku CLI
     1. Go to [this](https://devcenter.heroku.com/articles/heroku-cli) link and find your prefered way to install the heroku CLI
     2. Once installed login to your heroku account using ```heroku login``` 
