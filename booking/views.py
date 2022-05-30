@@ -807,6 +807,9 @@ class list_facility_bookings(LoginRequiredMixin, View):
 
             bookings = bkm.Booking.objects.filter(facility_id=facil_id)
 
+            if not len(bookings):
+                messages.error(request, 'No Bookings Found')
+
             return render(
                 request,
                 'booking/book/view_bookings.html',
