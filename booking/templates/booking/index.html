@@ -30,7 +30,7 @@
             {% for tag in tags%}
             <div class="col">
                 <div class="card shadow-sm">
-                  <img class="bd-placeholder-img card-img-top sport-card-image" src="{{tag.image}}" />
+                  <img class="bd-placeholder-img card-img-top sport-card-image" alt="{{tag.shorthand}}" src="{{tag.image}}" />
                   <div class="card-body">
                     <h5 class="card-title">{{tag.shorthand}}</h5>
                     <p class="card-text">{{tag.description}}</p>
