@@ -13,7 +13,12 @@ urlpatterns = [
         'facility/create',
         bkv.create_facility.as_view(),
         name='create_facility'),
-    path('facility/', bkv.display_facility.as_view(), name='display_facilities'),
+
+    path(
+        'facility/',
+        bkv.display_facility.as_view(),
+        name='display_facilities'
+    ),
 
     path(
         'facility/tags/modify/<int:facil_id>',
