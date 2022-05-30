@@ -66,5 +66,38 @@ Screenshots taken on mobile for the two pages that a user who is booking would s
 ![](documentation/testing/search_result_mobile.png)
 
 # Code Validation
-- PEP8 validation for view.py, giving no errors or warnings
+## Python
+- Validation for view.py, giving no errors or warnings
 ![](documentation/view_py.png)
+- Validation for forms.py
+![](documentation/testing/forms.png)
+- Validation for group_check.py
+![](documentation/testing/group_check.png)
+- Validation for month_name.py
+![](documentation/testing/month_name.png)
+- Validation for ordinal_format.png
+![](documentation/testing/ordinal_format.png)
+- Validation for models.py
+![](documentation/testing/models.png)
+- Validation for urls.py 
+![](documentation/testing/urls.png)
+
+## HTML
+Validated using https://validator.w3.org, not all pages were passed through validator as aside from those linked below all require you to be logged in.
+- [Index](https://validator.w3.org/nu/?doc=https%3A%2F%2Fbookit-5p.herokuapp.com)
+- [Login](https://validator.w3.org/nu/?doc=https://bookit-5p.herokuapp.com/login)
+- [Register](https://validator.w3.org/nu/?doc=https://bookit-5p.herokuapp.com/register)
+
+## CSS
+For css I have used https://jigsaw.w3.org/css-validator to validate my stylesheets
+- [calender.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653754742%2Fstatic%2Fcss%2Fcalender.ba4248a0e6d9.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [edit_tags.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1651229170%2Fstatic%2Fcss%2Fedit_tags.ca532f4f9149.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [index.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653569905%2Fstatic%2Fcss%2Findex.88d033533e16.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [list_facility.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653868144%2Fstatic%2Fcss%2Flist_facility.1d04c4500c10.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [list_tags.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653868144%2Fstatic%2Fcss%2Flist_tags.8994ac72288d.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [login.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564284%2Fstatic%2Fcss%2Flogin.b0671f9ed80e.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [modal.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653569904%2Fstatic%2Fcss%2Fmodal.ad6eb2a34f31.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [modify_facility_tags.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564284%2Fstatic%2Fcss%2Fmodify_facility_tags.243e84a9bbb7.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [modify_timeslots.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564283%2Fstatic%2Fcss%2Fmodify_timeslots.ea40933244ba.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [Search_results.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653868144%2Fstatic%2Fcss%2Fsearch_results.73235d1e58a0.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+- [style.css](https://res.cloudinary.com/dcjvfcg2q/raw/upload/v1653564282/static/css/style.c73d8f77d3d4.css)

@@ -2,6 +2,10 @@
 A website for booking the use of and making postings for sports facilities in the UK. 
 See [here](https://bookit-5p.herokuapp.com/) for the deployed site.
 
+### Note:
+See [Features](#features-left-to-implent) about current limitations
+
+
 ## User Stories
 - As a user I want to be able to create an account
 - As a user I want to be able to search for a facility by tag, location and radius
@@ -18,7 +22,7 @@ See [here](https://bookit-5p.herokuapp.com/) for the deployed site.
 - As a admin I want to be able to create new tags
 - As a admin I want to be able to modify existing tags
 - As a admin I want to be able to be able to delete existing tags
-- As a admin I want to be able to make changes
+- As a admin I want to be able to make changes to any facility
 
 ## UX
 As the site revolves around a single purpose I chose to keep the UX simple and have multiple ways to this main purpose,(which is booking a sports facility) at a time, so that the user is always able to get to the search page.
@@ -26,12 +30,6 @@ As the site revolves around a single purpose I chose to keep the UX simple and h
 For the actual booking page, I will be using a calendar and a table, from which the user will select a date from the calendar and the table will be updated to display a list times. This will be an easy to understand and use system, while also being easy to display on both mobile and desktop devices.
 
 All admin/owner pages will be table layouts as they will be mainly just displaying data and this will be the easiest and most concise way to display such data.
-
-### Color Scheme
-I will be using only two colors for the site, Blue, #1d71b8 and Green, #44ad47. 
-
-### Typography
-Gill Sans. I do not feel multiple are needed for a simple site.
 
 ### Wireframes
 Register
@@ -58,6 +56,9 @@ Modify Timeslots
 Modify Facility Tags
 ![](documentation/facility_tags.png)
 
+### ERD
+Entity Relationship Diagram that I used to create 
+![](documentation/entity_diagram.png)
 ## Features
 ### Existing Features
 - Nav bar leading to differnt pages
@@ -65,13 +66,12 @@ Modify Facility Tags
 
 - Form to search for facilities on index
     - Takes a tag via drop down
-    - A location (preferably a town)
+    - A location (preferably a town/city in the GB)
     - A distance in miles
     ![](documentation/screenshots/search_form.png)
 
 - A list of sports offered
     - Taken from the "Tag" table and updates live to reflect the table
-    - (Take again without placeholders)
     ![](documentation/screenshots/sports_cards.png)
 
 - Clickable calendar to visually choose what date you want
@@ -123,8 +123,10 @@ Modify Facility Tags
 - Updating a timeslots involves entire of CRUD
 ![](documentation/CRUD/timeslots_whole_crud.png)
 ## Features left to implent
-- Use googles geocode api as its more precise (currently it is paid for)
-- Have a clickable map for facility owners to select where there facility it
+- As currently the geocoder I am using does not know the location of some places and is a bit off for others, it will default to a placeholder location to get around this I'd like to do one of the two, or both:
+    - Use googles geocode api as its more precise (currently it is paid for)
+    - Have a clickable map for facility owners to select where there facility it
+
 - Email updates to users when booked or cancelled
 - Show available days on results screen
 
@@ -188,7 +190,8 @@ The following steps will all be done in your IDE Terminal
 ## Technologies used
 - I used [git](https://git-scm.com/) for version control and storage.
 - To help with using git, I used [github](https://github.com/).
-
+- I used github projects to keep track of where I was in my project
+![](documentation/projects.png)
 - I used [html](https://en.wikipedia.org/wiki/HTML) to design the site.
 - And [CSS](https://en.wikipedia.org/wiki/CSS) to style the site.
 - For most of the sites layout ive used [Bootstrap](https://getbootstrap.com/) and its many [examples](https://getbootstrap.com/docs/5.2/examples/) to help with quick development
