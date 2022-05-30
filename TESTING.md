@@ -120,3 +120,7 @@ For css I have used https://jigsaw.w3.org/css-validator to validate my styleshee
 - [modify_timeslots.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564283%2Fstatic%2Fcss%2Fmodify_timeslots.ea40933244ba.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
 - [Search_results.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653868144%2Fstatic%2Fcss%2Fsearch_results.73235d1e58a0.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
 - [style.css](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fres.cloudinary.com%2Fdcjvfcg2q%2Fraw%2Fupload%2Fv1653564282%2Fstatic%2Fcss%2Fstyle.c73d8f77d3d4.css&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en)
+
+## Unfixed Bugs
+- Pages that make a POST through AJAX do not correctly display success/failure message
+- If a timeslots table has started off empty and you try to add completed timeslots mixed with incomplete none will be saved. But modifying a table with an ALREADY active timeslot and trying to and new incomplete and complete slots will add the new ones and not the old ones.

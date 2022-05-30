@@ -129,6 +129,9 @@ Entity Relationship Diagram that I used to create
 
 - Email updates to users when booked or cancelled
 - Show available days on results screen
+- Pagination
+- Expand from just the UK to global
+- Dont allow overlapping timeslots
 
 # Testing
 See [TESTING.md](TESTING.md)
